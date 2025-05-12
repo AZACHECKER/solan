@@ -1015,6 +1015,15 @@ const AIChat = ({ language }) => {
     fetchWallets();
   }, []);
   
+  // Fetch selected wallet data when wallet changes
+  useEffect(() => {
+    if (selectedWallet) {
+      fetchWalletDetails(selectedWallet);
+    } else {
+      setSelectedWalletData(null);
+    }
+  }, [selectedWallet]);
+  
   const fetchWallets = async () => {
     try {
       setWalletsLoading(true);
@@ -1024,6 +1033,30 @@ const AIChat = ({ language }) => {
     } catch (err) {
       console.error("Error fetching wallets:", err);
       setWalletsLoading(false);
+    }
+  };
+  
+  const fetchWalletDetails = async (walletId) => {
+    try {
+      const walletResponse = await axios.get(`${API}/wallets/${walletId}`);
+      const balanceResponse = await axios.get(`${API}/wallets/${walletId}/balance`);
+      
+      let tokens = [];
+      try {
+        const tokensResponse = await axios.get(`${API}/wallets/${walletId}/tokens`);
+        tokens = tokensResponse.data;
+      } catch (err) {
+        console.error("Error fetching tokens:", err);
+      }
+      
+      setSelectedWalletData({
+        ...walletResponse.data,
+        balance: balanceResponse.data.balance,
+        token_symbol: balanceResponse.data.token_symbol,
+        tokens
+      });
+    } catch (err) {
+      console.error("Error fetching wallet details:", err);
     }
   };
   
