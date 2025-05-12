@@ -982,6 +982,7 @@ const Footer = ({ language }) => {
 // Main App Component
 function App() {
   const [darkMode, setDarkMode] = useState(true);
+  const [language, setLanguage] = useState("ru"); // Default to Russian as requested
   
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -989,22 +990,22 @@ function App() {
 
   useEffect(() => {
     // Apply theme to html element
-    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", darkMode ? "win98-dark" : "win98-light");
   }, [darkMode]);
 
   return (
-    <div className={`App min-h-screen flex flex-col`}>
+    <div className={`App min-h-screen flex flex-col win98-theme ${darkMode ? 'win98-dark' : 'win98-light'}`}>
       <BrowserRouter>
-        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} language={language} setLanguage={setLanguage} />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/wallets" element={<Wallets />} />
-            <Route path="/wallet/:id" element={<WalletDetail />} />
-            <Route path="/chat" element={<AIChat />} />
+            <Route path="/" element={<Home language={language} />} />
+            <Route path="/wallets" element={<Wallets language={language} />} />
+            <Route path="/wallet/:id" element={<WalletDetail language={language} />} />
+            <Route path="/chat" element={<AIChat language={language} />} />
           </Routes>
         </main>
-        <Footer />
+        <Footer language={language} />
       </BrowserRouter>
     </div>
   );
