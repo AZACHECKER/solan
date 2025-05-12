@@ -1117,6 +1117,35 @@ const AIChat = ({ language }) => {
   const handleAction = (action) => {
     // In a real app, we would implement handling of actions here
     console.log("AI suggested action:", action);
+    
+    // Example action handling
+    if (action.type === "CREATE_WALLET") {
+      // Redirect to wallet creation page
+      window.location.href = "/wallets";
+    } else if (action.type === "CHECK_BALANCE" && action.wallet_id) {
+      // Refresh wallet data
+      fetchWalletDetails(action.wallet_id);
+    } else if (action.type === "SEND_TRANSACTION" && action.wallet_id) {
+      // Redirect to wallet details page for transaction
+      window.location.href = `/wallet/${action.wallet_id}`;
+    } else if (action.type === "UPDATE_OWNER" && action.wallet_id) {
+      // Redirect to wallet details page for owner update
+      window.location.href = `/wallet/${action.wallet_id}`;
+    } else if (action.type === "SET_SPONSOR" && action.wallet_id) {
+      // Redirect to wallet details page for sponsor setting
+      window.location.href = `/wallet/${action.wallet_id}`;
+    } else if (action.type === "BUNDLE_TRANSACTION" && action.wallet_id) {
+      // Redirect to wallet details page for bundle creation
+      window.location.href = `/wallet/${action.wallet_id}`;
+    }
+  };
+  
+  // Get chain color styling
+  const getChainColor = (chainType) => {
+    if (chainType === "ETH") return "var(--console-eth)";
+    if (chainType === "SOL") return "var(--console-sol)";
+    if (chainType === "TRON") return "var(--console-tron)";
+    return "var(--console-text)";
   };
   
   return (
