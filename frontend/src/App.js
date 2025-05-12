@@ -618,12 +618,15 @@ const Wallets = ({ language }) => {
 const WalletCard = ({ wallet, language }) => {
   const t = languages[language];
   const [balance, setBalance] = useState(null);
+  const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tokensLoading, setTokensLoading] = useState(true);
   const [showPrivateKey, setShowPrivateKey] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
     fetchBalance();
+    fetchTokens();
   }, []);
   
   const fetchBalance = async () => {
@@ -637,20 +640,54 @@ const WalletCard = ({ wallet, language }) => {
     }
   };
   
+  const fetchTokens = async () => {
+    try {
+      setTokensLoading(true);
+      const response = await axios.get(`${API}/wallets/${wallet.wallet_id}/tokens`);
+      setTokens(response.data);
+      setTokensLoading(false);
+    } catch (err) {
+      console.error("Error fetching tokens:", err);
+      setTokens([]);
+      setTokensLoading(false);
+    }
+  };
+  
+  // Get chain color styling
+  const getChainColor = (chainType) => {
+    if (chainType === "ETH") return "var(--console-eth)";
+    if (chainType === "SOL") return "var(--console-sol)";
+    if (chainType === "TRON") return "var(--console-tron)";
+    return "var(--console-text)";
+  };
+  
   return (
     <div className="console-card">
       <div className="console-card-title">
         <span>{wallet.name}</span>
-        <div className="console-badge">{wallet.chain_type}</div>
+        <div className="console-badge" style={{
+          backgroundColor: getChainColor(wallet.chain_type)
+        }}>
+          {wallet.chain_type}
+        </div>
       </div>
       <div className="console-card-content">
-        <h3 className="text-[#00ffff] mb-1">{t.address}:</h3>
+        <h3 className="text-[#36f9f6] mb-1">{t.address}:</h3>
         <div className="crypto-address mb-2">
           {wallet.address}
         </div>
         
+        {wallet.sponsor_address && (
+          <div className="mt-2 mb-2 p-2 border border-[#feca57] rounded bg-[#142638]">
+            <div className="flex items-center">
+              <span className="text-[#feca57] text-sm">{t.sponsorAddress}:</span>
+              <span className="ml-2 truncate">{wallet.sponsor_address}</span>
+            </div>
+          </div>
+        )}
+        
         <div className="mt-3">
-          <h3 className="text-[#00ffff] mb-1">{t.balance}:</h3>
+          <h3 className="text-[#36f9f6] mb-1">{t.balance}:</h3>
           {loading ? (
             <div className="console-loader console-loader-sm"></div>
           ) : (
@@ -659,6 +696,29 @@ const WalletCard = ({ wallet, language }) => {
             </div>
           )}
         </div>
+        
+        {tokens.length > 0 && (
+          <div className="mt-3">
+            <h3 className="text-[#36f9f6] mb-1">{t.tokens}:</h3>
+            {tokensLoading ? (
+              <div className="console-loader console-loader-sm"></div>
+            ) : (
+              <div className="console-code-block p-2">
+                {tokens.slice(0, 2).map((token, idx) => (
+                  <div key={idx} className="flex justify-between mb-1">
+                    <span>{token.symbol}</span>
+                    <span>{token.balance}</span>
+                  </div>
+                ))}
+                {tokens.length > 2 && (
+                  <div className="text-right text-sm text-[#4ba3c3]">
+                    +{tokens.length - 2} {t.tokens}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="mt-3">
           <button 
@@ -671,7 +731,7 @@ const WalletCard = ({ wallet, language }) => {
           
           {showPrivateKey && (
             <div className="mt-2">
-              <h3 className="text-[#ff0000] mb-1">{t.privateKeyHeading}</h3>
+              <h3 className="text-[#ff4757] mb-1">{t.privateKeyHeading}</h3>
               <div className="crypto-key">
                 {wallet.encrypted_mnemonic}
               </div>
