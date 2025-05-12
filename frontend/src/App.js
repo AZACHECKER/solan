@@ -19,14 +19,14 @@ const languages = {
     
     // Hero
     heroTitle: "Manage Your Crypto with AI",
-    heroSubtitle: "The smartest way to manage your Solana and Ethereum wallets. Let our AI assistant help you navigate the crypto world.",
+    heroSubtitle: "The smartest way to manage your Solana, Ethereum and TRON wallets. Let our AI assistant help you navigate the crypto world.",
     createWallet: "Create Wallet",
     chatWithAI: "Chat with AI",
     
     // Features
     smartWalletManagement: "Smart Wallet Management",
     secureWallets: "Secure Wallets",
-    secureWalletsDesc: "Create and manage both Solana and Ethereum wallets with ease and security.",
+    secureWalletsDesc: "Create and manage Solana, Ethereum, and TRON wallets with ease and security.",
     simpleTransactions: "Simple Transactions",
     simpleTransactionsDesc: "Send and receive crypto with just a few clicks or a simple voice command.",
     aiAssistant: "AI Assistant",
@@ -37,10 +37,14 @@ const languages = {
     createNewWallet: "Create New Wallet",
     cancel: "Cancel",
     importExistingWallet: "Import Existing Wallet",
+    walletCreated: "Wallet Created Successfully!",
+    importedWallet: "Wallet Imported Successfully!",
+    walletDetails: "Wallet Details",
     walletName: "Wallet Name",
     blockchain: "Blockchain",
     ethereum: "Ethereum",
     solana: "Solana",
+    tron: "TRON",
     importWallet: "Import existing wallet",
     recoveryPhrase: "Recovery Phrase (12 or 24 words)",
     recoveryPlaceholder: "Enter recovery phrase (12 or 24 words separated by spaces)",
@@ -49,8 +53,17 @@ const languages = {
     createFirstWallet: "Create Your First Wallet",
     viewDetails: "View Details",
     useWithAI: "Use with AI",
+    generateMnemonic: "Generate Random Phrase",
+    generatedMnemonic: "Generated Recovery Phrase",
+    saveMnemonicWarning: "IMPORTANT: Save this phrase somewhere safe. It is the only way to recover your wallet.",
+    securityWarning: "SECURITY WARNING: Never share your recovery phrase or private key with anyone!",
+    mnemonicPhrase: "Recovery Phrase",
+    backupWarning: "Make sure to backup this information securely. If lost, funds cannot be recovered!",
+    understood: "I Understand",
+    showKey: "Show Private Key",
+    hideKey: "Hide Private Key",
     
-    // Wallet Details
+    // Wallet Details & Management
     back: "Back to Wallets",
     send: "Send",
     balance: "Balance",
@@ -65,6 +78,26 @@ const languages = {
     to: "To",
     status: "Status",
     privateKeyHeading: "Private Key (Keep Secret!)",
+    tokens: "Tokens",
+    gasPrice: "Gas Price",
+    gasUsed: "Gas Used",
+    simulateTransaction: "Simulate Transaction",
+    createTransactionBundle: "Create Transaction Bundle",
+    bundleTransactions: "Bundle Transactions",
+    addToBundle: "Add to Bundle",
+    bundleName: "Bundle Name",
+    bundleDescription: "Bundle Description",
+    executeBundle: "Execute Bundle",
+    bundleCreated: "Transaction Bundle Created",
+    changeOwner: "Change Wallet Owner",
+    newOwnerAddress: "New Owner Address",
+    ownerChanged: "Wallet Owner Changed",
+    addSponsor: "Add Sponsor",
+    sponsorAddress: "Sponsor Address",
+    sponsorGasLimit: "Sponsor Gas Limit (Optional)",
+    sponsorAdded: "Transaction Sponsor Added",
+    useSponsor: "Use Sponsor for Transaction",
+    sponsored: "Sponsored",
     
     // AI Chat
     aiWalletAssistant: "AI Wallet Assistant",
@@ -74,7 +107,7 @@ const languages = {
     welcomeToAI: "Welcome to the AI Wallet Assistant!",
     askAnything: "Ask me anything about your wallets, crypto, or blockchain.",
     exampleQuestions: "Example questions:",
-    exampleQuestion1: "How do I create a new Solana wallet?",
+    exampleQuestion1: "How do I create a new TRON wallet?",
     exampleQuestion2: "What's the current balance of my wallet?",
     exampleQuestion3: "How do I send ETH to another address?",
     chatPlaceholder: "Ask anything about your wallets or crypto...",
@@ -82,7 +115,7 @@ const languages = {
     
     // Footer
     disclaimer: "Disclaimer: This is a demo app. Do not use for real funds.",
-    copyright: "© 2025 WalletAI - Crypto Wallet Management with AI"
+    copyright: "© 2025 CryptoTerminal - Advanced Crypto Wallet Management with AI"
   },
   ru: {
     // Header
@@ -91,14 +124,14 @@ const languages = {
     
     // Hero
     heroTitle: "Управляйте криптовалютой с помощью ИИ",
-    heroSubtitle: "Самый умный способ управления кошельками Solana и Ethereum. Позвольте нашему ИИ-ассистенту помочь вам ориентироваться в мире криптовалют.",
+    heroSubtitle: "Самый умный способ управления кошельками Solana, Ethereum и TRON. Позвольте нашему ИИ-ассистенту помочь вам ориентироваться в мире криптовалют.",
     createWallet: "Создать кошелек",
     chatWithAI: "Чат с ИИ",
     
     // Features
     smartWalletManagement: "Умное управление кошельком",
     secureWallets: "Безопасные кошельки",
-    secureWalletsDesc: "Создавайте и управляйте кошельками Solana и Ethereum с легкостью и безопасностью.",
+    secureWalletsDesc: "Создавайте и управляйте кошельками Solana, Ethereum и TRON с легкостью и безопасностью.",
     simpleTransactions: "Простые транзакции",
     simpleTransactionsDesc: "Отправляйте и получайте криптовалюту всего в несколько кликов или с помощью голосовой команды.",
     aiAssistant: "ИИ-ассистент",
@@ -109,10 +142,14 @@ const languages = {
     createNewWallet: "Создать новый кошелек",
     cancel: "Отмена",
     importExistingWallet: "Импортировать существующий кошелек",
+    walletCreated: "Кошелек успешно создан!",
+    importedWallet: "Кошелек успешно импортирован!",
+    walletDetails: "Детали кошелька",
     walletName: "Название кошелька",
     blockchain: "Блокчейн",
     ethereum: "Ethereum",
     solana: "Solana",
+    tron: "TRON",
     importWallet: "Импортировать существующий кошелек",
     recoveryPhrase: "Фраза восстановления (12 или 24 слова)",
     recoveryPlaceholder: "Введите фразу восстановления (12 или 24 слова, разделенные пробелами)",
@@ -121,8 +158,17 @@ const languages = {
     createFirstWallet: "Создайте свой первый кошелек",
     viewDetails: "Подробности",
     useWithAI: "Использовать с ИИ",
+    generateMnemonic: "Сгенерировать случайную фразу",
+    generatedMnemonic: "Сгенерированная фраза восстановления",
+    saveMnemonicWarning: "ВАЖНО: Сохраните эту фразу в надежном месте. Это единственный способ восстановить ваш кошелек.",
+    securityWarning: "ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ: Никогда не делитесь своей фразой восстановления или приватным ключом!",
+    mnemonicPhrase: "Фраза восстановления",
+    backupWarning: "Обязательно сохраните эту информацию в безопасном месте. Если она будет утеряна, средства нельзя будет восстановить!",
+    understood: "Я понимаю",
+    showKey: "Показать приватный ключ",
+    hideKey: "Скрыть приватный ключ",
     
-    // Wallet Details
+    // Wallet Details & Management
     back: "Назад к кошелькам",
     send: "Отправить",
     balance: "Баланс",
@@ -137,6 +183,26 @@ const languages = {
     to: "Кому",
     status: "Статус",
     privateKeyHeading: "Приватный ключ (Держите в тайне!)",
+    tokens: "Токены",
+    gasPrice: "Цена газа",
+    gasUsed: "Использовано газа",
+    simulateTransaction: "Симуляция транзакции",
+    createTransactionBundle: "Создать пакет транзакций",
+    bundleTransactions: "Пакет транзакций",
+    addToBundle: "Добавить в пакет",
+    bundleName: "Название пакета",
+    bundleDescription: "Описание пакета",
+    executeBundle: "Выполнить пакет",
+    bundleCreated: "Пакет транзакций создан",
+    changeOwner: "Изменить владельца кошелька",
+    newOwnerAddress: "Адрес нового владельца",
+    ownerChanged: "Владелец кошелька изменен",
+    addSponsor: "Добавить спонсора",
+    sponsorAddress: "Адрес спонсора",
+    sponsorGasLimit: "Лимит газа спонсора (Необязательно)",
+    sponsorAdded: "Спонсор транзакций добавлен",
+    useSponsor: "Использовать спонсора для транзакции",
+    sponsored: "Спонсируемая",
     
     // AI Chat
     aiWalletAssistant: "ИИ-ассистент кошелька",
@@ -146,7 +212,7 @@ const languages = {
     welcomeToAI: "Добро пожаловать в ИИ-ассистент кошелька!",
     askAnything: "Спросите меня о чем угодно, касающемся ваших кошельков, криптовалют или блокчейна.",
     exampleQuestions: "Примеры вопросов:",
-    exampleQuestion1: "Как создать новый кошелек Solana?",
+    exampleQuestion1: "Как создать новый кошелек TRON?",
     exampleQuestion2: "Какой текущий баланс моего кошелька?",
     exampleQuestion3: "Как отправить ETH на другой адрес?",
     chatPlaceholder: "Спросите что-нибудь о ваших кошельках или криптовалюте...",
@@ -154,7 +220,7 @@ const languages = {
     
     // Footer
     disclaimer: "Отказ от ответственности: Это демо-приложение. Не используйте его для реальных средств.",
-    copyright: "© 2025 WalletAI - Управление криптокошельками с ИИ"
+    copyright: "© 2025 CryptoTerminal - Продвинутое управление криптокошельками с ИИ"
   }
 };
 
