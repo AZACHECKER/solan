@@ -194,23 +194,24 @@ const Hero = ({ language }) => {
   const t = languages[language];
   
   return (
-    <section className="py-20 win98-container-primary">
+    <section className="py-16 console-container-primary">
       <div className="container mx-auto px-4 text-center">
-        <div className="win98-window mx-auto max-w-4xl">
-          <div className="win98-window-title">
-            <span>WalletAI</span>
-            <button className="win98-btn win98-close">×</button>
+        <h1 className="text-4xl font-bold mb-6 text-[#00ffff]">{t.heroTitle}</h1>
+        <div className="console-code-block mx-auto max-w-2xl mb-8">
+          <div className="text-left mb-2">
+            <span className="console-prompt">user@crypto-terminal</span> 
+            initialize_crypto_wallet --chain=solana --secure
           </div>
-          <div className="win98-window-content p-6">
-            <h1 className="text-4xl font-bold mb-6">{t.heroTitle}</h1>
-            <p className="text-xl mb-10 max-w-2xl mx-auto">
-              {t.heroSubtitle}
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link to="/wallets" className="win98-btn win98-btn-primary">{t.createWallet}</Link>
-              <Link to="/chat" className="win98-btn">{t.chatWithAI}</Link>
-            </div>
+          <div className="text-left mt-1 text-[#00ff00]">
+            {`> ${t.heroSubtitle}`}
           </div>
+        </div>
+        <div className="flex gap-4 justify-center mt-8">
+          <Link to="/wallets" className="console-btn console-btn-primary">{t.createWallet}</Link>
+          <Link to="/chat" className="console-btn">{t.chatWithAI}</Link>
+        </div>
+        <div className="mt-8">
+          <div className="inline-block blinking-cursor"></div>
         </div>
       </div>
     </section>
@@ -222,34 +223,37 @@ const Features = ({ language }) => {
   const t = languages[language];
   
   return (
-    <section className="py-16 win98-bg">
+    <section className="py-16 console-bg">
       <div className="container mx-auto px-4">
-        <div className="win98-window mx-auto max-w-6xl">
-          <div className="win98-window-title">
-            <span>{t.smartWalletManagement}</span>
+        <h2 className="text-2xl font-bold text-center mb-8 text-[#00ffff]">{t.smartWalletManagement}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="console-card">
+            <div className="console-card-title">{t.secureWallets}</div>
+            <div className="console-card-content">
+              <div className="text-4xl mb-4">🔐</div>
+              <p>{t.secureWalletsDesc}</p>
+              <div className="mt-3 console-code-block">
+                <code>generate_wallet -secure -backup</code>
+              </div>
+            </div>
           </div>
-          <div className="win98-window-content p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="win98-card">
-                <div className="win98-card-title">{t.secureWallets}</div>
-                <div className="win98-card-content">
-                  <div className="text-4xl mb-4">🔐</div>
-                  <p>{t.secureWalletsDesc}</p>
-                </div>
+          <div className="console-card">
+            <div className="console-card-title">{t.simpleTransactions}</div>
+            <div className="console-card-content">
+              <div className="text-4xl mb-4">💸</div>
+              <p>{t.simpleTransactionsDesc}</p>
+              <div className="mt-3 console-code-block">
+                <code>send 0.5 ETH --to 0x123...abc</code>
               </div>
-              <div className="win98-card">
-                <div className="win98-card-title">{t.simpleTransactions}</div>
-                <div className="win98-card-content">
-                  <div className="text-4xl mb-4">💸</div>
-                  <p>{t.simpleTransactionsDesc}</p>
-                </div>
-              </div>
-              <div className="win98-card">
-                <div className="win98-card-title">{t.aiAssistant}</div>
-                <div className="win98-card-content">
-                  <div className="text-4xl mb-4">🤖</div>
-                  <p>{t.aiAssistantDesc}</p>
-                </div>
+            </div>
+          </div>
+          <div className="console-card">
+            <div className="console-card-title">{t.aiAssistant}</div>
+            <div className="console-card-content">
+              <div className="text-4xl mb-4">🤖</div>
+              <p>{t.aiAssistantDesc}</p>
+              <div className="mt-3 console-code-block">
+                <code>ask "How to recover wallet?"</code>
               </div>
             </div>
           </div>
