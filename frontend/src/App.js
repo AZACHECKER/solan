@@ -260,17 +260,18 @@ const Features = ({ language }) => {
 };
 
 // Home Page
-const Home = () => {
+const Home = ({ language }) => {
   return (
     <div>
-      <Hero />
-      <Features />
+      <Hero language={language} />
+      <Features language={language} />
     </div>
   );
 };
 
 // Wallets Page
-const Wallets = () => {
+const Wallets = ({ language }) => {
+  const t = languages[language];
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -325,104 +326,112 @@ const Wallets = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Your Wallets</h1>
-        <button 
-          className="btn btn-primary"
-          onClick={() => setShowCreateForm(!showCreateForm)}
-        >
-          {showCreateForm ? "Cancel" : "Create New Wallet"}
-        </button>
-      </div>
-      
-      {showCreateForm && (
-        <div className="card bg-base-200 shadow-xl mb-8">
-          <div className="card-body">
-            <h2 className="card-title">{importMode ? "Import Existing Wallet" : "Create New Wallet"}</h2>
-            <form onSubmit={createWallet}>
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Wallet Name</span>
-                </label>
-                <input 
-                  type="text" 
-                  value={newWalletName}
-                  onChange={(e) => setNewWalletName(e.target.value)}
-                  className="input input-bordered" 
-                  placeholder="My Wallet"
-                  required
-                />
-              </div>
-              
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Blockchain</span>
-                </label>
-                <select 
-                  className="select select-bordered w-full"
-                  value={newWalletChain}
-                  onChange={(e) => setNewWalletChain(e.target.value)}
-                >
-                  <option value="ETH">Ethereum</option>
-                  <option value="SOL">Solana</option>
-                </select>
-              </div>
-              
-              <div className="form-control mb-6">
-                <label className="label cursor-pointer">
-                  <span className="label-text">Import existing wallet</span>
-                  <input 
-                    type="checkbox" 
-                    className="toggle"
-                    checked={importMode}
-                    onChange={() => setImportMode(!importMode)}
-                  />
-                </label>
-              </div>
-              
-              {importMode && (
-                <div className="form-control mb-4">
-                  <label className="label">
-                    <span className="label-text">Recovery Phrase (12 or 24 words)</span>
-                  </label>
-                  <textarea 
-                    className="textarea textarea-bordered h-24"
-                    value={mnemonic}
-                    onChange={(e) => setMnemonic(e.target.value)}
-                    placeholder="Enter recovery phrase (12 or 24 words separated by spaces)"
-                    required
-                  ></textarea>
-                </div>
-              )}
-              
-              <div className="card-actions justify-end">
-                <button type="submit" className="btn btn-primary">
-                  {importMode ? "Import Wallet" : "Create Wallet"}
-                </button>
-              </div>
-            </form>
+      <div className="win98-window">
+        <div className="win98-window-title">
+          <span>{t.yourWallets}</span>
+        </div>
+        <div className="win98-window-content p-4">
+          <div className="flex justify-between items-center mb-8">
+            <button 
+              className="win98-btn win98-btn-primary"
+              onClick={() => setShowCreateForm(!showCreateForm)}
+            >
+              {showCreateForm ? t.cancel : t.createNewWallet}
+            </button>
           </div>
+          
+          {showCreateForm && (
+            <div className="win98-card mb-8">
+              <div className="win98-card-title">
+                {importMode ? t.importExistingWallet : t.createNewWallet}
+              </div>
+              <div className="win98-card-content">
+                <form onSubmit={createWallet}>
+                  <div className="form-control mb-4">
+                    <label className="win98-label">
+                      {t.walletName}
+                    </label>
+                    <input 
+                      type="text" 
+                      value={newWalletName}
+                      onChange={(e) => setNewWalletName(e.target.value)}
+                      className="win98-input" 
+                      placeholder="My Wallet"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-control mb-4">
+                    <label className="win98-label">
+                      {t.blockchain}
+                    </label>
+                    <select 
+                      className="win98-select w-full"
+                      value={newWalletChain}
+                      onChange={(e) => setNewWalletChain(e.target.value)}
+                    >
+                      <option value="ETH">{t.ethereum}</option>
+                      <option value="SOL">{t.solana}</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-control mb-6">
+                    <label className="win98-label cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="win98-checkbox"
+                        checked={importMode}
+                        onChange={() => setImportMode(!importMode)}
+                      />
+                      <span className="ml-2">{t.importWallet}</span>
+                    </label>
+                  </div>
+                  
+                  {importMode && (
+                    <div className="form-control mb-4">
+                      <label className="win98-label">
+                        {t.recoveryPhrase}
+                      </label>
+                      <textarea 
+                        className="win98-textarea h-24"
+                        value={mnemonic}
+                        onChange={(e) => setMnemonic(e.target.value)}
+                        placeholder={t.recoveryPlaceholder}
+                        required
+                      ></textarea>
+                    </div>
+                  )}
+                  
+                  <div className="text-right">
+                    <button type="submit" className="win98-btn win98-btn-primary">
+                      {importMode ? t.importWalletBtn : t.createWallet}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+          
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="win98-loader"></div>
+            </div>
+          ) : wallets.length === 0 ? (
+            <div className="text-center py-12 win98-inset p-4">
+              <p className="text-lg mb-4">{t.noWallets}</p>
+              <button className="win98-btn win98-btn-primary" onClick={() => setShowCreateForm(true)}>
+                {t.createFirstWallet}
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {wallets.map((wallet) => (
+                <WalletCard key={wallet.wallet_id} wallet={wallet} language={language} />
+              ))}
+            </div>
+          )}
         </div>
-      )}
-      
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      ) : wallets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-lg mb-4">You don't have any wallets yet.</p>
-          <button className="btn btn-primary" onClick={() => setShowCreateForm(true)}>
-            Create Your First Wallet
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wallets.map((wallet) => (
-            <WalletCard key={wallet.wallet_id} wallet={wallet} />
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
