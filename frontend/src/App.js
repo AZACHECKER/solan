@@ -990,11 +990,11 @@ function App() {
 
   useEffect(() => {
     // Apply theme to html element
-    document.documentElement.setAttribute("data-theme", darkMode ? "win98-dark" : "win98-light");
+    document.documentElement.setAttribute("data-theme", "console-theme");
   }, [darkMode]);
 
   return (
-    <div className={`App min-h-screen flex flex-col win98-theme ${darkMode ? 'win98-dark' : 'win98-light'}`}>
+    <div className="App terminal-effect">
       <BrowserRouter>
         <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} language={language} setLanguage={setLanguage} />
         <main className="flex-grow">
