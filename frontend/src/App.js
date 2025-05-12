@@ -190,17 +190,27 @@ const Header = ({ darkMode, toggleDarkMode, language, setLanguage }) => {
 };
 
 // Hero Section for Home Page
-const Hero = () => {
+const Hero = ({ language }) => {
+  const t = languages[language];
+  
   return (
-    <section className="py-20 bg-gradient-to-b from-primary to-primary-dark text-white">
+    <section className="py-20 win98-container-primary">
       <div className="container mx-auto px-4 text-center">
-        <h1 className="text-5xl font-bold mb-6">Manage Your Crypto with AI</h1>
-        <p className="text-xl mb-10 max-w-2xl mx-auto">
-          The smartest way to manage your Solana and Ethereum wallets. Let our AI assistant help you navigate the crypto world.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link to="/wallets" className="btn btn-secondary btn-lg">Create Wallet</Link>
-          <Link to="/chat" className="btn btn-outline btn-lg">Chat with AI</Link>
+        <div className="win98-window mx-auto max-w-4xl">
+          <div className="win98-window-title">
+            <span>WalletAI</span>
+            <button className="win98-btn win98-close">×</button>
+          </div>
+          <div className="win98-window-content p-6">
+            <h1 className="text-4xl font-bold mb-6">{t.heroTitle}</h1>
+            <p className="text-xl mb-10 max-w-2xl mx-auto">
+              {t.heroSubtitle}
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link to="/wallets" className="win98-btn win98-btn-primary">{t.createWallet}</Link>
+              <Link to="/chat" className="win98-btn">{t.chatWithAI}</Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -208,31 +218,39 @@ const Hero = () => {
 };
 
 // Features Section
-const Features = () => {
+const Features = ({ language }) => {
+  const t = languages[language];
+  
   return (
-    <section className="py-16 bg-base-100">
+    <section className="py-16 win98-bg">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Smart Wallet Management</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <div className="text-4xl text-primary mb-4">🔐</div>
-              <h3 className="card-title text-xl mb-2">Secure Wallets</h3>
-              <p>Create and manage both Solana and Ethereum wallets with ease and security.</p>
-            </div>
+        <div className="win98-window mx-auto max-w-6xl">
+          <div className="win98-window-title">
+            <span>{t.smartWalletManagement}</span>
           </div>
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <div className="text-4xl text-primary mb-4">💸</div>
-              <h3 className="card-title text-xl mb-2">Simple Transactions</h3>
-              <p>Send and receive crypto with just a few clicks or a simple voice command.</p>
-            </div>
-          </div>
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <div className="text-4xl text-primary mb-4">🤖</div>
-              <h3 className="card-title text-xl mb-2">AI Assistant</h3>
-              <p>Get help, information, and advice from our intelligent AI assistant.</p>
+          <div className="win98-window-content p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="win98-card">
+                <div className="win98-card-title">{t.secureWallets}</div>
+                <div className="win98-card-content">
+                  <div className="text-4xl mb-4">🔐</div>
+                  <p>{t.secureWalletsDesc}</p>
+                </div>
+              </div>
+              <div className="win98-card">
+                <div className="win98-card-title">{t.simpleTransactions}</div>
+                <div className="win98-card-content">
+                  <div className="text-4xl mb-4">💸</div>
+                  <p>{t.simpleTransactionsDesc}</p>
+                </div>
+              </div>
+              <div className="win98-card">
+                <div className="win98-card-title">{t.aiAssistant}</div>
+                <div className="win98-card-content">
+                  <div className="text-4xl mb-4">🤖</div>
+                  <p>{t.aiAssistantDesc}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
