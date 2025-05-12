@@ -10,10 +10,152 @@ window.Buffer = Buffer;
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Utility function to truncate addresses
-const truncateAddress = (address) => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+// Language options
+const languages = {
+  en: {
+    // Header
+    wallets: "Wallets",
+    aiChat: "AI Chat",
+    
+    // Hero
+    heroTitle: "Manage Your Crypto with AI",
+    heroSubtitle: "The smartest way to manage your Solana and Ethereum wallets. Let our AI assistant help you navigate the crypto world.",
+    createWallet: "Create Wallet",
+    chatWithAI: "Chat with AI",
+    
+    // Features
+    smartWalletManagement: "Smart Wallet Management",
+    secureWallets: "Secure Wallets",
+    secureWalletsDesc: "Create and manage both Solana and Ethereum wallets with ease and security.",
+    simpleTransactions: "Simple Transactions",
+    simpleTransactionsDesc: "Send and receive crypto with just a few clicks or a simple voice command.",
+    aiAssistant: "AI Assistant",
+    aiAssistantDesc: "Get help, information, and advice from our intelligent AI assistant.",
+    
+    // Wallets
+    yourWallets: "Your Wallets",
+    createNewWallet: "Create New Wallet",
+    cancel: "Cancel",
+    importExistingWallet: "Import Existing Wallet",
+    walletName: "Wallet Name",
+    blockchain: "Blockchain",
+    ethereum: "Ethereum",
+    solana: "Solana",
+    importWallet: "Import existing wallet",
+    recoveryPhrase: "Recovery Phrase (12 or 24 words)",
+    recoveryPlaceholder: "Enter recovery phrase (12 or 24 words separated by spaces)",
+    importWalletBtn: "Import Wallet",
+    noWallets: "You don't have any wallets yet.",
+    createFirstWallet: "Create Your First Wallet",
+    viewDetails: "View Details",
+    useWithAI: "Use with AI",
+    
+    // Wallet Details
+    back: "Back to Wallets",
+    send: "Send",
+    balance: "Balance",
+    recipient: "Recipient Address",
+    amount: "Amount",
+    amountPlaceholder: "Amount in",
+    sendTransaction: "Send Transaction",
+    transactionHistory: "Transaction History",
+    noTransactions: "No transactions found.",
+    date: "Date",
+    from: "From",
+    to: "To",
+    status: "Status",
+    privateKeyHeading: "Private Key (Keep Secret!)",
+    
+    // AI Chat
+    aiWalletAssistant: "AI Wallet Assistant",
+    selectWallet: "Select Wallet",
+    noWalletsAvailable: "No wallets available.",
+    generalChat: "No wallet (general chat)",
+    welcomeToAI: "Welcome to the AI Wallet Assistant!",
+    askAnything: "Ask me anything about your wallets, crypto, or blockchain.",
+    exampleQuestions: "Example questions:",
+    exampleQuestion1: "How do I create a new Solana wallet?",
+    exampleQuestion2: "What's the current balance of my wallet?",
+    exampleQuestion3: "How do I send ETH to another address?",
+    chatPlaceholder: "Ask anything about your wallets or crypto...",
+    sendBtn: "Send",
+    
+    // Footer
+    disclaimer: "Disclaimer: This is a demo app. Do not use for real funds.",
+    copyright: "© 2025 WalletAI - Crypto Wallet Management with AI"
+  },
+  ru: {
+    // Header
+    wallets: "Кошельки",
+    aiChat: "ИИ Чат",
+    
+    // Hero
+    heroTitle: "Управляйте криптовалютой с помощью ИИ",
+    heroSubtitle: "Самый умный способ управления кошельками Solana и Ethereum. Позвольте нашему ИИ-ассистенту помочь вам ориентироваться в мире криптовалют.",
+    createWallet: "Создать кошелек",
+    chatWithAI: "Чат с ИИ",
+    
+    // Features
+    smartWalletManagement: "Умное управление кошельком",
+    secureWallets: "Безопасные кошельки",
+    secureWalletsDesc: "Создавайте и управляйте кошельками Solana и Ethereum с легкостью и безопасностью.",
+    simpleTransactions: "Простые транзакции",
+    simpleTransactionsDesc: "Отправляйте и получайте криптовалюту всего в несколько кликов или с помощью голосовой команды.",
+    aiAssistant: "ИИ-ассистент",
+    aiAssistantDesc: "Получайте помощь, информацию и советы от нашего интеллектуального ИИ-ассистента.",
+    
+    // Wallets
+    yourWallets: "Ваши кошельки",
+    createNewWallet: "Создать новый кошелек",
+    cancel: "Отмена",
+    importExistingWallet: "Импортировать существующий кошелек",
+    walletName: "Название кошелька",
+    blockchain: "Блокчейн",
+    ethereum: "Ethereum",
+    solana: "Solana",
+    importWallet: "Импортировать существующий кошелек",
+    recoveryPhrase: "Фраза восстановления (12 или 24 слова)",
+    recoveryPlaceholder: "Введите фразу восстановления (12 или 24 слова, разделенные пробелами)",
+    importWalletBtn: "Импортировать кошелек",
+    noWallets: "У вас пока нет кошельков.",
+    createFirstWallet: "Создайте свой первый кошелек",
+    viewDetails: "Подробности",
+    useWithAI: "Использовать с ИИ",
+    
+    // Wallet Details
+    back: "Назад к кошелькам",
+    send: "Отправить",
+    balance: "Баланс",
+    recipient: "Адрес получателя",
+    amount: "Сумма",
+    amountPlaceholder: "Сумма в",
+    sendTransaction: "Отправить транзакцию",
+    transactionHistory: "История транзакций",
+    noTransactions: "Транзакции не найдены.",
+    date: "Дата",
+    from: "От",
+    to: "Кому",
+    status: "Статус",
+    privateKeyHeading: "Приватный ключ (Держите в тайне!)",
+    
+    // AI Chat
+    aiWalletAssistant: "ИИ-ассистент кошелька",
+    selectWallet: "Выберите кошелек",
+    noWalletsAvailable: "Нет доступных кошельков.",
+    generalChat: "Без кошелька (общий чат)",
+    welcomeToAI: "Добро пожаловать в ИИ-ассистент кошелька!",
+    askAnything: "Спросите меня о чем угодно, касающемся ваших кошельков, криптовалют или блокчейна.",
+    exampleQuestions: "Примеры вопросов:",
+    exampleQuestion1: "Как создать новый кошелек Solana?",
+    exampleQuestion2: "Какой текущий баланс моего кошелька?",
+    exampleQuestion3: "Как отправить ETH на другой адрес?",
+    chatPlaceholder: "Спросите что-нибудь о ваших кошельках или криптовалюте...",
+    sendBtn: "Отправить",
+    
+    // Footer
+    disclaimer: "Отказ от ответственности: Это демо-приложение. Не используйте его для реальных средств.",
+    copyright: "© 2025 WalletAI - Управление криптокошельками с ИИ"
+  }
 };
 
 // Header Component
