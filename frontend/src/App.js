@@ -552,6 +552,7 @@ const WalletCard = ({ wallet, language }) => {
   const t = languages[language];
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -570,40 +571,56 @@ const WalletCard = ({ wallet, language }) => {
   };
   
   return (
-    <div className="win98-card">
-      <div className="win98-card-title">
-        {wallet.name}
-        <div className="win98-badge">{wallet.chain_type}</div>
+    <div className="console-card">
+      <div className="console-card-title">
+        <span>{wallet.name}</span>
+        <div className="console-badge">{wallet.chain_type}</div>
       </div>
-      <div className="win98-card-content">
-        <h3 className="text-sm font-bold mb-1">{t.address}:</h3>
-        <p className="text-sm font-mono overflow-hidden text-ellipsis break-all win98-inset p-2 mb-3">
+      <div className="console-card-content">
+        <h3 className="text-[#00ffff] mb-1">{t.address}:</h3>
+        <div className="crypto-address mb-2">
           {wallet.address}
-        </p>
+        </div>
         
-        <h3 className="text-sm font-bold mb-1">{t.privateKeyHeading}:</h3>
-        <p className="text-sm font-mono overflow-hidden text-ellipsis break-all win98-inset p-2 mb-3">
-          {wallet.encrypted_mnemonic}
-        </p>
-        
-        <div className="mt-4">
-          <h3 className="text-sm font-bold mb-1">{t.balance}:</h3>
+        <div className="mt-3">
+          <h3 className="text-[#00ffff] mb-1">{t.balance}:</h3>
           {loading ? (
-            <div className="win98-loader win98-loader-sm"></div>
+            <div className="console-loader console-loader-sm"></div>
           ) : (
-            <p className="text-xl font-bold win98-inset p-2">{balance?.balance} {balance?.token_symbol}</p>
+            <div className="console-code-block p-2 text-xl font-bold">
+              {balance?.balance} {balance?.token_symbol}
+            </div>
           )}
         </div>
         
-        <div className="flex justify-end mt-4 gap-2">
+        <div className="mt-3">
           <button 
-            className="win98-btn"
+            type="button" 
+            className="console-btn text-xs w-full"
+            onClick={() => setShowPrivateKey(!showPrivateKey)}
+          >
+            {showPrivateKey ? t.hideKey : t.showKey}
+          </button>
+          
+          {showPrivateKey && (
+            <div className="mt-2">
+              <h3 className="text-[#ff0000] mb-1">{t.privateKeyHeading}</h3>
+              <div className="crypto-key">
+                {wallet.encrypted_mnemonic}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="flex justify-between mt-4">
+          <button 
+            className="console-btn"
             onClick={() => navigate(`/wallet/${wallet.wallet_id}`)}
           >
             {t.viewDetails}
           </button>
           <button 
-            className="win98-btn win98-btn-primary"
+            className="console-btn console-btn-primary"
             onClick={() => navigate(`/chat?wallet=${wallet.wallet_id}`)}
           >
             {t.useWithAI}
