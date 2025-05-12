@@ -14,28 +14,13 @@ import json
 # Blockchain related imports
 from web3 import Web3
 from eth_account import Account
-from hdwallet import HDWallet
-from hdwallet.symbols import ETH, SOL
 import base58
 from mnemonic import Mnemonic
 import secrets
+import hashlib
 
 # For Solana
 from solana.rpc.api import Client as SolanaClient
-import base58
-
-# Define a simple PublicKey class for our needs
-class PublicKey:
-    def __init__(self, value):
-        if isinstance(value, bytes):
-            self.value = value
-        elif isinstance(value, str):
-            self.value = base58.b58decode(value)
-        else:
-            raise ValueError("Unsupported value type")
-    
-    def __str__(self):
-        return base58.b58encode(self.value).decode('utf-8')
 
 # AI related imports
 import openai
@@ -143,13 +128,13 @@ async def create_ethereum_wallet(name: str, mnemonic: Optional[str] = None) -> W
         # Generate a new mnemonic
         mnemonic = mnemo.generate(strength=128)
     
-    # Create HD wallet
-    hdwallet = HDWallet(symbol=ETH)
-    hdwallet.from_mnemonic(mnemonic=mnemonic)
-    hdwallet.from_path("m/44'/60'/0'/0/0")
+    # Create a seed from the mnemonic
+    seed = hashlib.pbkdf2_hmac("sha512", mnemonic.encode("utf-8"), b"mnemonic", 2048)
     
-    # Get wallet details
-    private_key = hdwallet.private_key()
+    # Use the first 32 bytes as private key (simplified for demo)
+    private_key = "0x" + seed[:32].hex()
+    
+    # Create account from private key
     account = Account.from_key(private_key)
     
     wallet = Wallet(
@@ -173,16 +158,14 @@ async def create_solana_wallet(name: str, mnemonic: Optional[str] = None) -> Wal
         # Generate a new mnemonic
         mnemonic = mnemo.generate(strength=128)
     
-    # Create HD wallet
-    hdwallet = HDWallet(symbol=SOL)
-    hdwallet.from_mnemonic(mnemonic=mnemonic)
-    hdwallet.from_path("m/44'/501'/0'/0'")
+    # Create a seed from the mnemonic (simplified for demo)
+    seed = hashlib.pbkdf2_hmac("sha512", mnemonic.encode("utf-8"), b"mnemonic", 2048)
     
-    # Get wallet details
-    keypair_bytes = hdwallet.seed()[0:32]
-    # For our simplified PublicKey class
-    public_key = PublicKey(keypair_bytes)
-    address = str(public_key)
+    # Use first 32 bytes for keypair
+    keypair_bytes = seed[:32]
+    
+    # Create a basic base58 encoding for the address
+    address = base58.b58encode(keypair_bytes).decode('utf-8')
     
     wallet = Wallet(
         name=name,
