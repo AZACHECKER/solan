@@ -704,7 +704,7 @@ const WalletDetail = ({ language }) => {
   if (loading && !wallet) {
     return (
       <div className="container mx-auto px-4 py-12 flex justify-center">
-        <div className="win98-loader win98-loader-lg"></div>
+        <div className="console-loader console-loader-lg"></div>
       </div>
     );
   }
