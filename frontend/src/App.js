@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Buffer } from "buffer";
+import AIChat from "./AIChat";
 
 // Make Buffer available globally (needed for crypto operations)
 window.Buffer = Buffer;
