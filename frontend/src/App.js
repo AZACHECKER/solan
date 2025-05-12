@@ -1,51 +1,796 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Buffer } from "buffer";
+
+// Make Buffer available globally (needed for crypto operations)
+window.Buffer = Buffer;
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Utility function to truncate addresses
+const truncateAddress = (address) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
+// Header Component
+const Header = ({ darkMode, toggleDarkMode }) => {
+  return (
+    <header className="bg-primary text-white shadow-md">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold">WalletAI</Link>
+        <nav className="flex items-center gap-6">
+          <Link to="/wallets" className="hover:text-primary-200 transition">Wallets</Link>
+          <Link to="/chat" className="hover:text-primary-200 transition">AI Chat</Link>
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full bg-gray-700 text-white"
+          >
+            {darkMode ? "🌙" : "☀️"}
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
+};
+
+// Hero Section for Home Page
+const Hero = () => {
+  return (
+    <section className="py-20 bg-gradient-to-b from-primary to-primary-dark text-white">
+      <div className="container mx-auto px-4 text-center">
+        <h1 className="text-5xl font-bold mb-6">Manage Your Crypto with AI</h1>
+        <p className="text-xl mb-10 max-w-2xl mx-auto">
+          The smartest way to manage your Solana and Ethereum wallets. Let our AI assistant help you navigate the crypto world.
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Link to="/wallets" className="btn btn-secondary btn-lg">Create Wallet</Link>
+          <Link to="/chat" className="btn btn-outline btn-lg">Chat with AI</Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Features Section
+const Features = () => {
+  return (
+    <section className="py-16 bg-base-100">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">Smart Wallet Management</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <div className="text-4xl text-primary mb-4">🔐</div>
+              <h3 className="card-title text-xl mb-2">Secure Wallets</h3>
+              <p>Create and manage both Solana and Ethereum wallets with ease and security.</p>
+            </div>
+          </div>
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <div className="text-4xl text-primary mb-4">💸</div>
+              <h3 className="card-title text-xl mb-2">Simple Transactions</h3>
+              <p>Send and receive crypto with just a few clicks or a simple voice command.</p>
+            </div>
+          </div>
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <div className="text-4xl text-primary mb-4">🤖</div>
+              <h3 className="card-title text-xl mb-2">AI Assistant</h3>
+              <p>Get help, information, and advice from our intelligent AI assistant.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Home Page
 const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
   return (
     <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+      <Hero />
+      <Features />
     </div>
   );
 };
 
-function App() {
+// Wallets Page
+const Wallets = () => {
+  const [wallets, setWallets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newWalletName, setNewWalletName] = useState("");
+  const [newWalletChain, setNewWalletChain] = useState("ETH");
+  const [importMode, setImportMode] = useState(false);
+  const [mnemonic, setMnemonic] = useState("");
+  
+  useEffect(() => {
+    fetchWallets();
+  }, []);
+  
+  const fetchWallets = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API}/wallets`);
+      setWallets(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching wallets:", err);
+      setLoading(false);
+    }
+  };
+  
+  const createWallet = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const walletData = {
+        name: newWalletName,
+        chain_type: newWalletChain,
+      };
+      
+      if (importMode && mnemonic) {
+        walletData.mnemonic = mnemonic;
+      }
+      
+      const response = await axios.post(`${API}/wallets`, walletData);
+      
+      // Add new wallet to list
+      setWallets([...wallets, response.data]);
+      
+      // Reset form
+      setNewWalletName("");
+      setMnemonic("");
+      setShowCreateForm(false);
+    } catch (err) {
+      console.error("Error creating wallet:", err);
+      alert("Failed to create wallet. Please try again.");
+    }
+  };
+  
   return (
-    <div className="App">
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Your Wallets</h1>
+        <button 
+          className="btn btn-primary"
+          onClick={() => setShowCreateForm(!showCreateForm)}
+        >
+          {showCreateForm ? "Cancel" : "Create New Wallet"}
+        </button>
+      </div>
+      
+      {showCreateForm && (
+        <div className="card bg-base-200 shadow-xl mb-8">
+          <div className="card-body">
+            <h2 className="card-title">{importMode ? "Import Existing Wallet" : "Create New Wallet"}</h2>
+            <form onSubmit={createWallet}>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Wallet Name</span>
+                </label>
+                <input 
+                  type="text" 
+                  value={newWalletName}
+                  onChange={(e) => setNewWalletName(e.target.value)}
+                  className="input input-bordered" 
+                  placeholder="My Wallet"
+                  required
+                />
+              </div>
+              
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Blockchain</span>
+                </label>
+                <select 
+                  className="select select-bordered w-full"
+                  value={newWalletChain}
+                  onChange={(e) => setNewWalletChain(e.target.value)}
+                >
+                  <option value="ETH">Ethereum</option>
+                  <option value="SOL">Solana</option>
+                </select>
+              </div>
+              
+              <div className="form-control mb-6">
+                <label className="label cursor-pointer">
+                  <span className="label-text">Import existing wallet</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle"
+                    checked={importMode}
+                    onChange={() => setImportMode(!importMode)}
+                  />
+                </label>
+              </div>
+              
+              {importMode && (
+                <div className="form-control mb-4">
+                  <label className="label">
+                    <span className="label-text">Recovery Phrase (12 or 24 words)</span>
+                  </label>
+                  <textarea 
+                    className="textarea textarea-bordered h-24"
+                    value={mnemonic}
+                    onChange={(e) => setMnemonic(e.target.value)}
+                    placeholder="Enter recovery phrase (12 or 24 words separated by spaces)"
+                    required
+                  ></textarea>
+                </div>
+              )}
+              
+              <div className="card-actions justify-end">
+                <button type="submit" className="btn btn-primary">
+                  {importMode ? "Import Wallet" : "Create Wallet"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : wallets.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-lg mb-4">You don't have any wallets yet.</p>
+          <button className="btn btn-primary" onClick={() => setShowCreateForm(true)}>
+            Create Your First Wallet
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {wallets.map((wallet) => (
+            <WalletCard key={wallet.wallet_id} wallet={wallet} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Wallet Card Component
+const WalletCard = ({ wallet }) => {
+  const [balance, setBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+  
+  const fetchBalance = async () => {
+    try {
+      const response = await axios.get(`${API}/wallets/${wallet.wallet_id}/balance`);
+      setBalance(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching balance:", err);
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="card bg-base-200 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title">
+          {wallet.name}
+          <div className="badge badge-secondary">{wallet.chain_type}</div>
+        </h2>
+        
+        <p className="text-sm font-mono overflow-hidden text-ellipsis">
+          {truncateAddress(wallet.address)}
+        </p>
+        
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold mb-1">Balance:</h3>
+          {loading ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : (
+            <p className="text-xl font-bold">{balance?.balance} {balance?.token_symbol}</p>
+          )}
+        </div>
+        
+        <div className="card-actions justify-end mt-4">
+          <button 
+            className="btn btn-sm btn-outline"
+            onClick={() => navigate(`/wallet/${wallet.wallet_id}`)}
+          >
+            View Details
+          </button>
+          <button 
+            className="btn btn-sm btn-primary"
+            onClick={() => navigate(`/chat?wallet=${wallet.wallet_id}`)}
+          >
+            Use with AI
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Wallet Detail Page
+const WalletDetail = () => {
+  const navigate = useNavigate();
+  const [wallet, setWallet] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showSendForm, setShowSendForm] = useState(false);
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  
+  // Get wallet ID from URL
+  const walletId = window.location.pathname.split('/').pop();
+  
+  useEffect(() => {
+    fetchWalletData();
+  }, [walletId]);
+  
+  const fetchWalletData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch wallet details
+      const walletResponse = await axios.get(`${API}/wallets/${walletId}`);
+      setWallet(walletResponse.data);
+      
+      // Fetch balance
+      const balanceResponse = await axios.get(`${API}/wallets/${walletId}/balance`);
+      setBalance(balanceResponse.data);
+      
+      // Fetch transactions
+      const txResponse = await axios.get(`${API}/transactions/${walletId}`);
+      setTransactions(txResponse.data);
+      
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching wallet data:", err);
+      setLoading(false);
+      // Redirect back to wallets page if wallet not found
+      if (err.response?.status === 404) {
+        navigate('/wallets');
+      }
+    }
+  };
+  
+  const sendTransaction = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const txData = {
+        wallet_id: walletId,
+        to_address: recipient,
+        amount: amount,
+        token_symbol: wallet.chain_type === "ETH" ? "ETH" : "SOL"
+      };
+      
+      await axios.post(`${API}/transactions`, txData);
+      
+      // Refresh data
+      fetchWalletData();
+      setShowSendForm(false);
+      setRecipient("");
+      setAmount("");
+    } catch (err) {
+      console.error("Error sending transaction:", err);
+      alert("Failed to send transaction. Please try again.");
+    }
+  };
+  
+  if (loading && !wallet) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <button onClick={() => navigate('/wallets')} className="btn btn-ghost mb-4">
+          ← Back to Wallets
+        </button>
+        
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">
+              {wallet?.name}
+              <span className="ml-2 badge badge-secondary">{wallet?.chain_type}</span>
+            </h1>
+            <p className="font-mono text-sm mt-2">{wallet?.address}</p>
+          </div>
+          
+          <button 
+            className="btn btn-primary"
+            onClick={() => setShowSendForm(!showSendForm)}
+          >
+            Send {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}
+          </button>
+        </div>
+      </div>
+      
+      {/* Balance Card */}
+      <div className="card bg-base-200 shadow-xl mb-8">
+        <div className="card-body">
+          <h2 className="card-title">Balance</h2>
+          {balance ? (
+            <p className="text-3xl font-bold">{balance.balance} {balance.token_symbol}</p>
+          ) : (
+            <span className="loading loading-spinner loading-md"></span>
+          )}
+        </div>
+      </div>
+      
+      {/* Send Form */}
+      {showSendForm && (
+        <div className="card bg-base-200 shadow-xl mb-8">
+          <div className="card-body">
+            <h2 className="card-title">Send {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}</h2>
+            <form onSubmit={sendTransaction}>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Recipient Address</span>
+                </label>
+                <input 
+                  type="text" 
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                  className="input input-bordered" 
+                  placeholder={wallet?.chain_type === "ETH" ? "0x..." : "..."}
+                  required
+                />
+              </div>
+              
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Amount</span>
+                </label>
+                <input 
+                  type="number" 
+                  step="0.000001"
+                  min="0"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="input input-bordered" 
+                  placeholder={`Amount in ${wallet?.chain_type === "ETH" ? "ETH" : "SOL"}`}
+                  required
+                />
+              </div>
+              
+              <div className="card-actions justify-end">
+                <button type="button" onClick={() => setShowSendForm(false)} className="btn btn-ghost">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Send Transaction
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Transactions */}
+      <div className="card bg-base-200 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Transaction History</h2>
+          
+          {loading ? (
+            <div className="flex justify-center py-4">
+              <span className="loading loading-spinner loading-md"></span>
+            </div>
+          ) : transactions.length === 0 ? (
+            <p className="text-center py-4">No transactions found.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="table table-zebra">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((tx) => (
+                    <tr key={tx.tx_id}>
+                      <td>{new Date(tx.timestamp).toLocaleString()}</td>
+                      <td className="font-mono">{truncateAddress(tx.from_address)}</td>
+                      <td className="font-mono">{truncateAddress(tx.to_address)}</td>
+                      <td>{tx.amount} {tx.token_symbol}</td>
+                      <td>
+                        <span className={`badge ${
+                          tx.status === "confirmed" ? "badge-success" : 
+                          tx.status === "pending" ? "badge-warning" : "badge-error"
+                        }`}>
+                          {tx.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// AI Chat Page
+const AIChat = () => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [chatId, setChatId] = useState(null);
+  const [selectedWallet, setSelectedWallet] = useState(null);
+  const [wallets, setWallets] = useState([]);
+  const [walletsLoading, setWalletsLoading] = useState(true);
+  
+  // Get wallet ID from URL if present
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const walletId = params.get('wallet');
+    if (walletId) {
+      setSelectedWallet(walletId);
+    }
+    
+    fetchWallets();
+  }, []);
+  
+  const fetchWallets = async () => {
+    try {
+      setWalletsLoading(true);
+      const response = await axios.get(`${API}/wallets`);
+      setWallets(response.data);
+      setWalletsLoading(false);
+    } catch (err) {
+      console.error("Error fetching wallets:", err);
+      setWalletsLoading(false);
+    }
+  };
+  
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    
+    if (!input.trim()) return;
+    
+    // Add user message to chat
+    const userMessage = {
+      role: "user",
+      content: input,
+    };
+    
+    setMessages([...messages, userMessage]);
+    setInput("");
+    setLoading(true);
+    
+    try {
+      const response = await axios.post(`${API}/ai/chat`, {
+        message: input,
+        chat_id: chatId,
+        wallet_id: selectedWallet
+      });
+      
+      // Save chat ID if new
+      if (!chatId) {
+        setChatId(response.data.chat_id);
+      }
+      
+      // Add AI response to chat
+      const aiMessage = {
+        role: "assistant",
+        content: response.data.response,
+      };
+      
+      setMessages([...messages, userMessage, aiMessage]);
+      
+      // Handle action if present
+      if (response.data.action) {
+        handleAction(response.data.action);
+      }
+    } catch (err) {
+      console.error("Error sending message:", err);
+      
+      // Add error message
+      const errorMessage = {
+        role: "assistant",
+        content: "Sorry, there was an error processing your request. Please try again.",
+      };
+      
+      setMessages([...messages, userMessage, errorMessage]);
+    }
+    
+    setLoading(false);
+  };
+  
+  const handleAction = (action) => {
+    // In a real app, we would implement handling of actions here
+    console.log("AI suggested action:", action);
+  };
+  
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">AI Wallet Assistant</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Sidebar with wallet selection */}
+        <div className="lg:col-span-1">
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">Select Wallet</h2>
+              
+              {walletsLoading ? (
+                <div className="flex justify-center py-4">
+                  <span className="loading loading-spinner loading-md"></span>
+                </div>
+              ) : wallets.length === 0 ? (
+                <div className="py-2">
+                  <p className="mb-2">No wallets available.</p>
+                  <Link to="/wallets" className="btn btn-sm btn-primary">Create Wallet</Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">No wallet (general chat)</span>
+                      <input 
+                        type="radio" 
+                        name="wallet" 
+                        className="radio" 
+                        checked={selectedWallet === null}
+                        onChange={() => setSelectedWallet(null)}
+                      />
+                    </label>
+                  </div>
+                  
+                  {wallets.map((wallet) => (
+                    <div key={wallet.wallet_id} className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className="label-text">
+                          {wallet.name} ({wallet.chain_type})
+                        </span>
+                        <input 
+                          type="radio" 
+                          name="wallet" 
+                          className="radio" 
+                          checked={selectedWallet === wallet.wallet_id}
+                          onChange={() => setSelectedWallet(wallet.wallet_id)}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Chat interface */}
+        <div className="lg:col-span-3">
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <div className="chat-container h-96 overflow-y-auto mb-4 p-4 bg-base-300 rounded-lg">
+                {messages.length === 0 ? (
+                  <div className="text-center py-12">
+                    <h3 className="text-xl font-semibold mb-2">Welcome to the AI Wallet Assistant!</h3>
+                    <p className="mb-4">Ask me anything about your wallets, crypto, or blockchain.</p>
+                    <p className="text-sm">Example questions:</p>
+                    <ul className="text-sm list-disc list-inside">
+                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("How do I create a new Solana wallet?")}>
+                        How do I create a new Solana wallet?
+                      </li>
+                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("What's the current balance of my wallet?")}>
+                        What's the current balance of my wallet?
+                      </li>
+                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("How do I send ETH to another address?")}>
+                        How do I send ETH to another address?
+                      </li>
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((msg, index) => (
+                      <div 
+                        key={index} 
+                        className={`chat ${msg.role === "user" ? "chat-end" : "chat-start"}`}
+                      >
+                        <div className={`chat-bubble ${msg.role === "user" ? "chat-bubble-primary" : "chat-bubble-secondary"}`}>
+                          {msg.content}
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {loading && (
+                      <div className="chat chat-start">
+                        <div className="chat-bubble chat-bubble-secondary">
+                          <span className="loading loading-dots loading-sm"></span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              <form onSubmit={sendMessage} className="flex gap-2">
+                <input 
+                  type="text" 
+                  className="input input-bordered flex-1" 
+                  placeholder="Ask anything about your wallets or crypto..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  disabled={loading}
+                />
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? <span className="loading loading-spinner loading-sm"></span> : "Send"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Footer Component
+const Footer = () => {
+  return (
+    <footer className="bg-base-300 py-8">
+      <div className="container mx-auto px-4 text-center">
+        <p className="mb-2">© 2025 WalletAI - Crypto Wallet Management with AI</p>
+        <p className="text-sm">
+          Disclaimer: This is a demo app. Do not use for real funds.
+        </p>
+      </div>
+    </footer>
+  );
+};
+
+// Main App Component
+function App() {
+  const [darkMode, setDarkMode] = useState(true);
+  
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  useEffect(() => {
+    // Apply theme to html element
+    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  return (
+    <div className={`App min-h-screen flex flex-col`}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/wallets" element={<Wallets />} />
+            <Route path="/wallet/:id" element={<WalletDetail />} />
+            <Route path="/chat" element={<AIChat />} />
+          </Routes>
+        </main>
+        <Footer />
       </BrowserRouter>
     </div>
   );
