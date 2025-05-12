@@ -511,6 +511,7 @@ const Wallets = ({ language }) => {
                     >
                       <option value="ETH">{t.ethereum}</option>
                       <option value="SOL">{t.solana}</option>
+                      <option value="TRON">{t.tron}</option>
                     </select>
                   </div>
                   
