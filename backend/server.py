@@ -209,8 +209,13 @@ async def get_ethereum_balance(address: str) -> float:
 async def get_solana_balance(address: str) -> float:
     """Get the balance of a Solana address in SOL"""
     try:
-        balance = solana_client.get_balance(PublicKey(address))
-        return float(balance['result']['value']) / 1_000_000_000  # Convert lamports to SOL
+        response = solana_client.get_balance(address)
+        # Depending on how the response is structured
+        if isinstance(response, dict) and 'result' in response:
+            value = response['result']['value']
+        else:
+            value = response.value
+        return float(value) / 1_000_000_000  # Convert lamports to SOL
     except Exception as e:
         logging.error(f"Error getting SOL balance: {e}")
         return 0.0
