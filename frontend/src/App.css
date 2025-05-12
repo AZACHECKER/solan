@@ -2,20 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Console Theme */
+/* Console Theme - Improved colors */
 :root {
-  --console-bg: #000000;
-  --console-text: #00ff00;
-  --console-dimmed: #008800;
-  --console-accent: #00ffff;
-  --console-error: #ff0000;
-  --console-warning: #ffff00;
-  --console-success: #00ff00;
-  --console-prompt: #00ff00;
-  --console-input-bg: #111111;
-  --console-highlight-bg: #001100;
-  --console-border: #00aa00;
-  --console-blue: #0088ff;
+  --console-bg: #0a1929;
+  --console-text: #7df9ff;
+  --console-dimmed: #4ba3c3;
+  --console-accent: #36f9f6;
+  --console-error: #ff4757;
+  --console-warning: #feca57;
+  --console-success: #2ed573;
+  --console-prompt: #7df9ff;
+  --console-input-bg: #142638;
+  --console-highlight-bg: #0c3b59;
+  --console-border: #297fb8;
+  --console-blue: #70a1ff;
+  --console-purple: #5352ed;
+  --console-green-light: #7bed9f;
+  --console-tron: #c23631;
+  --console-eth: #627eea;
+  --console-sol: #9945ff;
 }
 
 .App {
