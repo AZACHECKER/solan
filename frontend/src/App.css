@@ -2,313 +2,436 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Windows 98 Theme */
+/* Console Theme */
 :root {
-  --win98-bg: #c0c0c0;
-  --win98-text: #000000;
-  --win98-border-light: #ffffff;
-  --win98-border-dark: #808080;
-  --win98-border-darker: #404040;
-  --win98-blue: #000080;
-  --win98-blue-light: #1084d0;
-  --win98-green: #008000;
-  --win98-red: #ff0000;
-  --win98-window-bg: #c0c0c0;
-  --win98-window-title: #000080;
-  --win98-button-face: #c0c0c0;
-  --win98-button-highlight: #ffffff;
-  --win98-button-shadow: #808080;
-  --win98-inset-light: #808080;
-  --win98-inset-dark: #ffffff;
+  --console-bg: #000000;
+  --console-text: #00ff00;
+  --console-dimmed: #008800;
+  --console-accent: #00ffff;
+  --console-error: #ff0000;
+  --console-warning: #ffff00;
+  --console-success: #00ff00;
+  --console-prompt: #00ff00;
+  --console-input-bg: #111111;
+  --console-highlight-bg: #001100;
+  --console-border: #00aa00;
+  --console-blue: #0088ff;
 }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Courier New', monospace;
+  background-color: var(--console-bg);
+  color: var(--console-text);
 }
 
-/* Windows 98 Theme - Light and Dark variants */
-.win98-theme {
-  background-color: var(--win98-bg);
-  color: var(--win98-text);
+/* Terminal screen effect */
+.terminal-effect {
+  background-color: var(--console-bg);
+  position: relative;
+  overflow: hidden;
 }
 
-.win98-dark {
-  --win98-bg: #008080; /* Teal background like Windows 98 */
-  --win98-text: #ffffff;
+.terminal-effect::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.2;
 }
 
-.win98-light {
-  --win98-bg: #c0c0c0; /* Classic Windows 98 gray */
-  --win98-text: #000000;
+/* Console Theme - Light and Dark variants */
+.console-theme {
+  background-color: var(--console-bg);
+  color: var(--console-text);
 }
 
 /* Header */
-.win98-header {
-  background-color: var(--win98-bg);
-  color: var(--win98-text);
-  border-bottom: 1px solid var(--win98-border-dark);
+.console-header {
+  background-color: var(--console-bg);
+  color: var(--console-accent);
+  border-bottom: 1px solid var(--console-border);
+  padding: 0.5rem 0;
 }
 
-.win98-title {
-  font-family: 'MS Sans Serif', Arial, sans-serif;
+.console-title {
+  font-family: 'Courier New', monospace;
   font-weight: bold;
+  color: var(--console-accent);
 }
 
 /* Container styles */
-.win98-container-primary {
-  background-color: var(--win98-bg);
+.console-container-primary {
+  background-color: var(--console-bg);
   padding: 1rem;
+  border: 1px solid var(--console-border);
 }
 
-.win98-container-footer {
-  background-color: var(--win98-bg);
-  border-top: 1px solid var(--win98-border-dark);
+.console-container-footer {
+  background-color: var(--console-bg);
+  border-top: 1px solid var(--console-border);
+  color: var(--console-dimmed);
 }
 
 /* Window */
-.win98-window {
-  border: 2px solid var(--win98-border-dark);
-  border-right-color: var(--win98-border-darker);
-  border-bottom-color: var(--win98-border-darker);
-  background-color: var(--win98-window-bg);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+.console-window {
+  border: 1px solid var(--console-border);
+  background-color: var(--console-bg);
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
 }
 
-.win98-window-title {
-  background-color: var(--win98-window-title);
-  color: white;
-  padding: 2px 4px;
+.console-window-title {
+  background-color: var(--console-border);
+  color: var(--console-bg);
+  padding: 0.25rem 0.5rem;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.win98-window-content {
-  padding: 8px;
-  background-color: var(--win98-window-bg);
+.console-window-content {
+  padding: 0.75rem;
+  background-color: var(--console-bg);
 }
 
 /* Card */
-.win98-card {
-  border: 2px solid var(--win98-border-dark);
-  border-left-color: var(--win98-border-light);
-  border-top-color: var(--win98-border-light);
-  border-right-color: var(--win98-border-darker);
-  border-bottom-color: var(--win98-border-darker);
-  background-color: var(--win98-window-bg);
+.console-card {
+  border: 1px solid var(--console-border);
+  background-color: var(--console-bg);
   margin-bottom: 1rem;
 }
 
-.win98-card-title {
-  background-color: var(--win98-window-title);
-  color: white;
-  padding: 2px 4px;
+.console-card-title {
+  background-color: var(--console-border);
+  color: var(--console-bg);
+  padding: 0.25rem 0.5rem;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.win98-card-content {
-  padding: 8px;
-  background-color: var(--win98-window-bg);
+.console-card-content {
+  padding: 0.75rem;
+  background-color: var(--console-bg);
 }
 
 /* Buttons */
-.win98-btn {
-  background-color: var(--win98-button-face);
-  border: 2px solid;
-  border-top-color: var(--win98-button-highlight);
-  border-left-color: var(--win98-button-highlight);
-  border-right-color: var(--win98-button-shadow);
-  border-bottom-color: var(--win98-button-shadow);
-  padding: 4px 8px;
-  font-family: 'MS Sans Serif', Arial, sans-serif;
+.console-btn {
+  background-color: var(--console-input-bg);
+  border: 1px solid var(--console-border);
+  padding: 0.25rem 0.75rem;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  color: var(--win98-text);
+  color: var(--console-text);
   cursor: pointer;
-  margin: 2px;
+  margin: 0.25rem;
+  transition: all 0.1s ease;
 }
 
-.win98-btn:active {
-  border-top-color: var(--win98-button-shadow);
-  border-left-color: var(--win98-button-shadow);
-  border-right-color: var(--win98-button-highlight);
-  border-bottom-color: var(--win98-button-highlight);
-  padding: 5px 7px 3px 9px;
+.console-btn:hover {
+  background-color: var(--console-border);
+  color: var(--console-bg);
 }
 
-.win98-btn-primary {
-  background-color: var(--win98-blue);
-  color: white;
+.console-btn:active {
+  transform: scale(0.98);
 }
 
-.win98-btn-sm {
-  padding: 2px 4px;
+.console-btn-primary {
+  background-color: var(--console-border);
+  color: var(--console-bg);
+}
+
+.console-btn-primary:hover {
+  background-color: var(--console-accent);
+  border-color: var(--console-accent);
+}
+
+.console-btn-sm {
+  padding: 0.125rem 0.375rem;
   font-size: 0.8rem;
 }
 
-.win98-close {
+.console-close {
   font-weight: bold;
-  color: white;
-  background-color: var(--win98-window-title);
-  border: 1px solid white;
-  padding: 0 4px;
-  margin-left: 4px;
+  color: var(--console-bg);
+  background-color: var(--console-border);
+  border: none;
+  padding: 0 0.5rem;
+  margin-left: 0.5rem;
   font-size: 1.2rem;
   line-height: 1;
 }
 
+.console-close:hover {
+  background-color: var(--console-error);
+}
+
 /* Form Elements */
-.win98-input, .win98-textarea, .win98-select {
-  border: 2px solid;
-  border-top-color: var(--win98-inset-light);
-  border-left-color: var(--win98-inset-light);
-  border-right-color: var(--win98-inset-dark);
-  border-bottom-color: var(--win98-inset-dark);
-  background-color: white;
-  padding: 4px;
-  font-family: 'MS Sans Serif', Arial, sans-serif;
+.console-input, .console-textarea, .console-select {
+  background-color: var(--console-input-bg);
+  border: 1px solid var(--console-border);
+  color: var(--console-accent);
+  padding: 0.375rem;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
+  width: 100%;
 }
 
-.win98-textarea {
+.console-input:focus, .console-textarea:focus, .console-select:focus {
+  outline: none;
+  border-color: var(--console-accent);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.console-textarea {
   resize: none;
+  height: 6rem;
 }
 
-.win98-select {
+.console-select {
   appearance: none;
-  padding-right: 20px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M4 1h8v2H4zM4 5h8v2H4zM4 9h8v2H4zM0 1h2v2H0zM0 5h2v2H0zM0 9h2v2H0z"/></svg>');
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%2300ff00' d='M0 0l4 4 4-4z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 4px center;
+  background-position: right 0.5rem center;
+  background-size: 8px;
+  padding-right: 1.5rem;
 }
 
-.win98-checkbox, .win98-radio-input {
-  margin-right: 4px;
+.console-checkbox, .console-radio-input {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--console-border);
+  background-color: var(--console-input-bg);
+  margin-right: 0.5rem;
+  position: relative;
+  cursor: pointer;
 }
 
-.win98-label {
+.console-checkbox:checked, .console-radio-input:checked {
+  background-color: var(--console-border);
+}
+
+.console-checkbox:checked::after {
+  content: "✓";
+  color: var(--console-bg);
+  position: absolute;
+  top: -0.125rem;
+  left: 0.125rem;
+  font-size: 0.875rem;
+}
+
+.console-radio-input {
+  border-radius: 50%;
+}
+
+.console-radio-input:checked::after {
+  content: "";
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--console-bg);
+  border-radius: 50%;
+}
+
+.console-label {
   display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--console-dimmed);
 }
 
 /* Inset areas (like for content display) */
-.win98-inset {
-  border: 2px solid;
-  border-top-color: var(--win98-inset-light);
-  border-left-color: var(--win98-inset-light);
-  border-right-color: var(--win98-inset-dark);
-  border-bottom-color: var(--win98-inset-dark);
-  background-color: white;
+.console-inset {
+  border: 1px solid var(--console-border);
+  background-color: var(--console-input-bg);
+  padding: 0.5rem;
+}
+
+.console-code-block {
+  background-color: var(--console-input-bg);
+  border: 1px solid var(--console-border);
+  padding: 0.5rem;
+  font-family: 'Courier New', monospace;
+  color: var(--console-accent);
+  word-break: break-all;
 }
 
 /* Badges */
-.win98-badge {
-  background-color: var(--win98-button-face);
-  border: 1px solid var(--win98-border-dark);
-  padding: 0 4px;
+.console-badge {
+  background-color: var(--console-input-bg);
+  border: 1px solid var(--console-border);
+  color: var(--console-text);
+  padding: 0 0.25rem;
   font-size: 0.8rem;
-  margin-left: 4px;
+  margin-left: 0.5rem;
 }
 
-.win98-badge-success {
-  background-color: var(--win98-green);
-  color: white;
+.console-badge-success {
+  background-color: var(--console-success);
+  color: var(--console-bg);
+  border-color: var(--console-success);
 }
 
-.win98-badge-warning {
-  background-color: #FF8C00;
-  color: white;
+.console-badge-warning {
+  background-color: var(--console-warning);
+  color: var(--console-bg);
+  border-color: var(--console-warning);
 }
 
-.win98-badge-error {
-  background-color: var(--win98-red);
-  color: white;
+.console-badge-error {
+  background-color: var(--console-error);
+  color: var(--console-bg);
+  border-color: var(--console-error);
 }
 
 /* Table */
-.win98-table {
+.console-table {
   width: 100%;
   border-collapse: collapse;
+  border: 1px solid var(--console-border);
 }
 
-.win98-table th {
-  background-color: var(--win98-button-face);
+.console-table th {
+  background-color: var(--console-input-bg);
+  color: var(--console-accent);
   font-weight: bold;
   text-align: left;
-  padding: 4px;
-  border: 1px solid var(--win98-border-dark);
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--console-border);
 }
 
-.win98-table td {
-  padding: 4px;
-  border: 1px solid var(--win98-border-dark);
+.console-table td {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--console-border);
 }
 
-.win98-table tr:nth-child(even) {
-  background-color: #f0f0f0;
+.console-table tr:nth-child(even) {
+  background-color: var(--console-highlight-bg);
 }
 
 /* Loader */
-.win98-loader {
+.console-loader {
   display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 4px solid var(--win98-button-face);
-  border-radius: 50%;
-  border-top: 4px solid var(--win98-blue);
-  animation: win98-spin 2s linear infinite;
+  position: relative;
+  width: 5rem;
+  height: 1rem;
+  overflow: hidden;
 }
 
-.win98-loader-sm {
-  width: 16px;
-  height: 16px;
-  border-width: 3px;
+.console-loader::after {
+  content: "|/—\\";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--console-accent);
+  animation: console-spin 1s steps(4) infinite;
 }
 
-.win98-loader-lg {
-  width: 48px;
-  height: 48px;
-  border-width: 6px;
+.console-loader-sm {
+  width: 2.5rem;
+  height: 0.75rem;
+  font-size: 0.75rem;
 }
 
-@keyframes win98-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.console-loader-lg {
+  width: 8rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
 }
 
-/* Chat messages */
-.win98-message {
-  margin-bottom: 8px;
+@keyframes console-spin {
+  to {
+    transform: translateX(-400%);
+  }
 }
 
-.win98-message-user {
+/* Prompt styles */
+.console-prompt {
+  color: var(--console-prompt);
+  margin-right: 0.5rem;
+}
+
+.console-prompt::before {
+  content: ">";
+  margin-right: 0.25rem;
+}
+
+/* Message styles */
+.console-message {
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.console-message-user {
   text-align: right;
 }
 
-.win98-message-content {
+.console-message-content {
   display: inline-block;
-  max-width: 80%;
-  padding: 8px;
+  max-width: 85%;
+  padding: 0.375rem 0.5rem;
   border-radius: 0;
 }
 
-.win98-message-user .win98-message-content {
-  background-color: var(--win98-blue-light);
-  color: white;
-  border: 2px solid var(--win98-blue);
+.console-message-user .console-message-content {
+  background-color: var(--console-highlight-bg);
+  color: var(--console-accent);
+  border-left: 0.25rem solid var(--console-accent);
 }
 
-.win98-message-assistant .win98-message-content {
-  background-color: var(--win98-button-face);
-  color: var(--win98-text);
-  border: 2px solid var(--win98-border-dark);
-  border-left-color: var(--win98-border-light);
-  border-top-color: var(--win98-border-light);
+.console-message-assistant .console-message-content {
+  background-color: var(--console-highlight-bg);
+  color: var(--console-text);
+  border-left: 0.25rem solid var(--console-text);
+}
+
+/* Blinking cursor */
+.blinking-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background-color: var(--console-text);
+  animation: blink 1s step-end infinite;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Address and key displays */
+.crypto-address, .crypto-key {
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  background-color: var(--console-input-bg);
+  padding: 0.5rem;
+  border: 1px solid var(--console-border);
+  color: var(--console-accent);
+  margin: 0.5rem 0;
+}
+
+.crypto-key {
+  color: var(--console-warning);
 }
