@@ -180,6 +180,7 @@ async def create_solana_wallet(name: str, mnemonic: Optional[str] = None) -> Wal
     
     # Get wallet details
     keypair_bytes = hdwallet.seed()[0:32]
+    # For our simplified PublicKey class
     public_key = PublicKey(keypair_bytes)
     address = str(public_key)
     
