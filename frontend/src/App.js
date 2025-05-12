@@ -738,7 +738,8 @@ const WalletDetail = ({ language }) => {
 };
 
 // AI Chat Page
-const AIChat = () => {
+const AIChat = ({ language }) => {
+  const t = languages[language];
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -831,124 +832,129 @@ const AIChat = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">AI Wallet Assistant</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar with wallet selection */}
-        <div className="lg:col-span-1">
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title">Select Wallet</h2>
-              
-              {walletsLoading ? (
-                <div className="flex justify-center py-4">
-                  <span className="loading loading-spinner loading-md"></span>
-                </div>
-              ) : wallets.length === 0 ? (
-                <div className="py-2">
-                  <p className="mb-2">No wallets available.</p>
-                  <Link to="/wallets" className="btn btn-sm btn-primary">Create Wallet</Link>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2 mt-2">
-                  <div className="form-control">
-                    <label className="label cursor-pointer">
-                      <span className="label-text">No wallet (general chat)</span>
-                      <input 
-                        type="radio" 
-                        name="wallet" 
-                        className="radio" 
-                        checked={selectedWallet === null}
-                        onChange={() => setSelectedWallet(null)}
-                      />
-                    </label>
-                  </div>
-                  
-                  {wallets.map((wallet) => (
-                    <div key={wallet.wallet_id} className="form-control">
-                      <label className="label cursor-pointer">
-                        <span className="label-text">
-                          {wallet.name} ({wallet.chain_type})
-                        </span>
-                        <input 
-                          type="radio" 
-                          name="wallet" 
-                          className="radio" 
-                          checked={selectedWallet === wallet.wallet_id}
-                          onChange={() => setSelectedWallet(wallet.wallet_id)}
-                        />
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+      <div className="win98-window">
+        <div className="win98-window-title">
+          <span>{t.aiWalletAssistant}</span>
         </div>
-        
-        {/* Chat interface */}
-        <div className="lg:col-span-3">
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <div className="chat-container h-96 overflow-y-auto mb-4 p-4 bg-base-300 rounded-lg">
-                {messages.length === 0 ? (
-                  <div className="text-center py-12">
-                    <h3 className="text-xl font-semibold mb-2">Welcome to the AI Wallet Assistant!</h3>
-                    <p className="mb-4">Ask me anything about your wallets, crypto, or blockchain.</p>
-                    <p className="text-sm">Example questions:</p>
-                    <ul className="text-sm list-disc list-inside">
-                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("How do I create a new Solana wallet?")}>
-                        How do I create a new Solana wallet?
-                      </li>
-                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("What's the current balance of my wallet?")}>
-                        What's the current balance of my wallet?
-                      </li>
-                      <li className="cursor-pointer hover:text-primary" onClick={() => setInput("How do I send ETH to another address?")}>
-                        How do I send ETH to another address?
-                      </li>
-                    </ul>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {messages.map((msg, index) => (
-                      <div 
-                        key={index} 
-                        className={`chat ${msg.role === "user" ? "chat-end" : "chat-start"}`}
-                      >
-                        <div className={`chat-bubble ${msg.role === "user" ? "chat-bubble-primary" : "chat-bubble-secondary"}`}>
-                          {msg.content}
-                        </div>
+        <div className="win98-window-content p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Sidebar with wallet selection */}
+            <div className="lg:col-span-1">
+              <div className="win98-card h-full">
+                <div className="win98-card-title">{t.selectWallet}</div>
+                <div className="win98-card-content">
+                  {walletsLoading ? (
+                    <div className="flex justify-center py-4">
+                      <div className="win98-loader"></div>
+                    </div>
+                  ) : wallets.length === 0 ? (
+                    <div className="py-2">
+                      <p className="mb-2">{t.noWalletsAvailable}</p>
+                      <Link to="/wallets" className="win98-btn win98-btn-sm win98-btn-primary">{t.createWallet}</Link>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2 mt-2">
+                      <div className="win98-radio">
+                        <label className="win98-label cursor-pointer">
+                          <input 
+                            type="radio" 
+                            name="wallet" 
+                            className="win98-radio-input" 
+                            checked={selectedWallet === null}
+                            onChange={() => setSelectedWallet(null)}
+                          />
+                          <span className="ml-2">{t.generalChat}</span>
+                        </label>
                       </div>
-                    ))}
-                    
-                    {loading && (
-                      <div className="chat chat-start">
-                        <div className="chat-bubble chat-bubble-secondary">
-                          <span className="loading loading-dots loading-sm"></span>
+                      
+                      {wallets.map((wallet) => (
+                        <div key={wallet.wallet_id} className="win98-radio">
+                          <label className="win98-label cursor-pointer">
+                            <input 
+                              type="radio" 
+                              name="wallet" 
+                              className="win98-radio-input" 
+                              checked={selectedWallet === wallet.wallet_id}
+                              onChange={() => setSelectedWallet(wallet.wallet_id)}
+                            />
+                            <span className="ml-2">
+                              {wallet.name} ({wallet.chain_type})
+                            </span>
+                          </label>
                         </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Chat interface */}
+            <div className="lg:col-span-3">
+              <div className="win98-card h-full">
+                <div className="win98-card-title">{t.aiChat}</div>
+                <div className="win98-card-content">
+                  <div className="win98-inset h-96 overflow-y-auto mb-4 p-4 bg-white">
+                    {messages.length === 0 ? (
+                      <div className="text-center py-12">
+                        <h3 className="text-xl font-semibold mb-2">{t.welcomeToAI}</h3>
+                        <p className="mb-4">{t.askAnything}</p>
+                        <p className="text-sm">{t.exampleQuestions}</p>
+                        <ul className="text-sm list-disc list-inside">
+                          <li className="cursor-pointer hover:text-blue-800" onClick={() => setInput(t.exampleQuestion1)}>
+                            {t.exampleQuestion1}
+                          </li>
+                          <li className="cursor-pointer hover:text-blue-800" onClick={() => setInput(t.exampleQuestion2)}>
+                            {t.exampleQuestion2}
+                          </li>
+                          <li className="cursor-pointer hover:text-blue-800" onClick={() => setInput(t.exampleQuestion3)}>
+                            {t.exampleQuestion3}
+                          </li>
+                        </ul>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {messages.map((msg, index) => (
+                          <div 
+                            key={index} 
+                            className={`win98-message ${msg.role === "user" ? "win98-message-user" : "win98-message-assistant"}`}
+                          >
+                            <div className="win98-message-content">
+                              {msg.content}
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {loading && (
+                          <div className="win98-message win98-message-assistant">
+                            <div className="win98-message-content">
+                              <div className="win98-loader win98-loader-sm"></div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
+                  
+                  <form onSubmit={sendMessage} className="flex gap-2">
+                    <input 
+                      type="text" 
+                      className="win98-input flex-1" 
+                      placeholder={t.chatPlaceholder}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      disabled={loading}
+                    />
+                    <button 
+                      type="submit" 
+                      className="win98-btn win98-btn-primary"
+                      disabled={loading}
+                    >
+                      {loading ? <div className="win98-loader win98-loader-sm"></div> : t.sendBtn}
+                    </button>
+                  </form>
+                </div>
               </div>
-              
-              <form onSubmit={sendMessage} className="flex gap-2">
-                <input 
-                  type="text" 
-                  className="input input-bordered flex-1" 
-                  placeholder="Ask anything about your wallets or crypto..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  disabled={loading}
-                />
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? <span className="loading loading-spinner loading-sm"></span> : "Send"}
-                </button>
-              </form>
             </div>
           </div>
         </div>
@@ -958,13 +964,15 @@ const AIChat = () => {
 };
 
 // Footer Component
-const Footer = () => {
+const Footer = ({ language }) => {
+  const t = languages[language];
+  
   return (
-    <footer className="bg-base-300 py-8">
+    <footer className="win98-container-footer py-8">
       <div className="container mx-auto px-4 text-center">
-        <p className="mb-2">© 2025 WalletAI - Crypto Wallet Management with AI</p>
+        <p className="mb-2">{t.copyright}</p>
         <p className="text-sm">
-          Disclaimer: This is a demo app. Do not use for real funds.
+          {t.disclaimer}
         </p>
       </div>
     </footer>
