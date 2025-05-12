@@ -1000,6 +1000,7 @@ const AIChat = ({ language }) => {
   const [loading, setLoading] = useState(false);
   const [chatId, setChatId] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
+  const [selectedWalletData, setSelectedWalletData] = useState(null);
   const [wallets, setWallets] = useState([]);
   const [walletsLoading, setWalletsLoading] = useState(true);
   
