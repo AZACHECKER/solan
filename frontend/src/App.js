@@ -283,6 +283,8 @@ const Wallets = ({ language }) => {
   const [newWalletChain, setNewWalletChain] = useState("ETH");
   const [importMode, setImportMode] = useState(false);
   const [mnemonic, setMnemonic] = useState("");
+  const [newWallet, setNewWallet] = useState(null); // Added to store newly created wallet
+  const [showMnemonic, setShowMnemonic] = useState(false); // Added to toggle mnemonic visibility
   
   useEffect(() => {
     fetchWallets();
@@ -315,62 +317,129 @@ const Wallets = ({ language }) => {
       
       const response = await axios.post(`${API}/wallets`, walletData);
       
+      // Store the new wallet data to display mnemonic phrase
+      setNewWallet(response.data);
+      setShowMnemonic(true);
+      
       // Add new wallet to list
       setWallets([...wallets, response.data]);
       
-      // Reset form
+      // Reset form (but keep showing mnemonic)
       setNewWalletName("");
       setMnemonic("");
-      setShowCreateForm(false);
     } catch (err) {
       console.error("Error creating wallet:", err);
       alert("Failed to create wallet. Please try again.");
     }
   };
+
+  const closeNewWalletInfo = () => {
+    setShowMnemonic(false);
+    setNewWallet(null);
+    setShowCreateForm(false);
+  };
+  
+  const generateRandomMnemonic = () => {
+    // This is a simplified function - in a real application, you'd use a proper BIP39 library
+    const words = [
+      "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse",
+      "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act",
+      "action", "actor", "actress", "actual", "adapt", "add", "addict", "address", "adjust", "admit",
+      "adult", "advance", "advice", "aerobic", "affair", "afford", "afraid", "again", "age", "agent"
+    ];
+    
+    let result = [];
+    for (let i = 0; i < 12; i++) {
+      const randomIndex = Math.floor(Math.random() * words.length);
+      result.push(words[randomIndex]);
+    }
+    
+    setMnemonic(result.join(" "));
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="win98-window">
-        <div className="win98-window-title">
-          <span>{t.yourWallets}</span>
+      <div className="console-window mb-8">
+        <div className="console-window-title">
+          <span>[root@crypto-terminal] ~$ ./list-wallets.sh</span>
         </div>
-        <div className="win98-window-content p-4">
-          <div className="flex justify-between items-center mb-8">
-            <button 
-              className="win98-btn win98-btn-primary"
-              onClick={() => setShowCreateForm(!showCreateForm)}
-            >
-              {showCreateForm ? t.cancel : t.createNewWallet}
-            </button>
+        <div className="console-window-content">
+          {/* New Wallet Information */}
+          {showMnemonic && newWallet && (
+            <div className="console-card mb-8">
+              <div className="console-card-title text-[#00ffff]">
+                <span>{importMode ? t.importedWallet : t.walletCreated}</span>
+              </div>
+              <div className="console-card-content">
+                <div className="mb-4">
+                  <h3 className="text-[#00ffff] mb-2">{t.walletDetails}</h3>
+                  <div className="console-code-block">
+                    <p><span className="text-[#ffff00]">NAME:</span> {newWallet.name}</p>
+                    <p><span className="text-[#ffff00]">TYPE:</span> {newWallet.chain_type}</p>
+                    <p><span className="text-[#ffff00]">ADDRESS:</span> {newWallet.address}</p>
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <h3 className="text-[#ff0000] mb-2">{t.securityWarning}</h3>
+                  <div className="crypto-key">
+                    <p className="mb-2">{t.mnemonicPhrase}:</p>
+                    <p className="break-all">{newWallet.encrypted_mnemonic}</p>
+                  </div>
+                  <p className="text-[#ffff00] mt-2">{t.backupWarning}</p>
+                </div>
+                
+                <div className="text-right mt-4">
+                  <button 
+                    className="console-btn console-btn-primary" 
+                    onClick={closeNewWalletInfo}
+                  >
+                    {t.understood}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-[#00ffff]">{t.yourWallets}</h1>
+            {!showCreateForm && !showMnemonic && (
+              <button 
+                className="console-btn console-btn-primary"
+                onClick={() => setShowCreateForm(true)}
+              >
+                {t.createNewWallet}
+              </button>
+            )}
           </div>
           
-          {showCreateForm && (
-            <div className="win98-card mb-8">
-              <div className="win98-card-title">
+          {showCreateForm && !showMnemonic && (
+            <div className="console-card mb-8">
+              <div className="console-card-title">
                 {importMode ? t.importExistingWallet : t.createNewWallet}
               </div>
-              <div className="win98-card-content">
+              <div className="console-card-content">
                 <form onSubmit={createWallet}>
                   <div className="form-control mb-4">
-                    <label className="win98-label">
+                    <label className="console-label">
                       {t.walletName}
                     </label>
                     <input 
                       type="text" 
                       value={newWalletName}
                       onChange={(e) => setNewWalletName(e.target.value)}
-                      className="win98-input" 
+                      className="console-input" 
                       placeholder="My Wallet"
                       required
                     />
                   </div>
                   
                   <div className="form-control mb-4">
-                    <label className="win98-label">
+                    <label className="console-label">
                       {t.blockchain}
                     </label>
                     <select 
-                      className="win98-select w-full"
+                      className="console-select w-full"
                       value={newWalletChain}
                       onChange={(e) => setNewWalletChain(e.target.value)}
                     >
@@ -380,10 +449,10 @@ const Wallets = ({ language }) => {
                   </div>
                   
                   <div className="form-control mb-6">
-                    <label className="win98-label cursor-pointer">
+                    <label className="console-label cursor-pointer flex items-center">
                       <input 
                         type="checkbox" 
-                        className="win98-checkbox"
+                        className="console-checkbox"
                         checked={importMode}
                         onChange={() => setImportMode(!importMode)}
                       />
@@ -391,23 +460,58 @@ const Wallets = ({ language }) => {
                     </label>
                   </div>
                   
-                  {importMode && (
+                  {importMode ? (
                     <div className="form-control mb-4">
-                      <label className="win98-label">
+                      <label className="console-label">
                         {t.recoveryPhrase}
                       </label>
                       <textarea 
-                        className="win98-textarea h-24"
+                        className="console-textarea h-24"
                         value={mnemonic}
                         onChange={(e) => setMnemonic(e.target.value)}
                         placeholder={t.recoveryPlaceholder}
                         required
                       ></textarea>
                     </div>
+                  ) : (
+                    <div className="text-center mb-6">
+                      <button 
+                        type="button" 
+                        className="console-btn"
+                        onClick={generateRandomMnemonic}
+                      >
+                        {t.generateMnemonic}
+                      </button>
+                      
+                      {mnemonic && (
+                        <div className="mt-4">
+                          <p className="console-label mb-2">{t.generatedMnemonic}:</p>
+                          <div className="crypto-key break-all">
+                            {mnemonic}
+                          </div>
+                          <p className="text-[#ffff00] text-sm mt-2">{t.saveMnemonicWarning}</p>
+                        </div>
+                      )}
+                    </div>
                   )}
                   
-                  <div className="text-right">
-                    <button type="submit" className="win98-btn win98-btn-primary">
+                  <div className="flex justify-end space-x-2">
+                    <button 
+                      type="button" 
+                      className="console-btn"
+                      onClick={() => {
+                        setShowCreateForm(false);
+                        setMnemonic("");
+                        setNewWalletName("");
+                      }}
+                    >
+                      {t.cancel}
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="console-btn console-btn-primary"
+                      disabled={!importMode && !mnemonic}
+                    >
                       {importMode ? t.importWalletBtn : t.createWallet}
                     </button>
                   </div>
@@ -417,18 +521,21 @@ const Wallets = ({ language }) => {
           )}
           
           {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="win98-loader"></div>
+            <div className="flex justify-center py-6">
+              <div className="console-loader"></div>
             </div>
           ) : wallets.length === 0 ? (
-            <div className="text-center py-12 win98-inset p-4">
+            <div className="text-center py-8 console-inset">
               <p className="text-lg mb-4">{t.noWallets}</p>
-              <button className="win98-btn win98-btn-primary" onClick={() => setShowCreateForm(true)}>
+              <button 
+                className="console-btn console-btn-primary" 
+                onClick={() => setShowCreateForm(true)}
+              >
                 {t.createFirstWallet}
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {wallets.map((wallet) => (
                 <WalletCard key={wallet.wallet_id} wallet={wallet} language={language} />
               ))}
