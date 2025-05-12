@@ -159,20 +159,30 @@ const languages = {
 };
 
 // Header Component
-const Header = ({ darkMode, toggleDarkMode }) => {
+const Header = ({ darkMode, toggleDarkMode, language, setLanguage }) => {
+  const t = languages[language];
+  
   return (
-    <header className="bg-primary text-white shadow-md">
+    <header className="win98-header shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold">WalletAI</Link>
-        <nav className="flex items-center gap-6">
-          <Link to="/wallets" className="hover:text-primary-200 transition">Wallets</Link>
-          <Link to="/chat" className="hover:text-primary-200 transition">AI Chat</Link>
+        <Link to="/" className="text-2xl font-bold win98-title">WalletAI</Link>
+        <nav className="flex items-center gap-4">
+          <Link to="/wallets" className="win98-btn">{t.wallets}</Link>
+          <Link to="/chat" className="win98-btn">{t.aiChat}</Link>
           <button 
             onClick={toggleDarkMode}
-            className="p-2 rounded-full bg-gray-700 text-white"
+            className="win98-btn px-3"
           >
             {darkMode ? "🌙" : "☀️"}
           </button>
+          <select 
+            className="win98-select"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+          </select>
         </nav>
       </div>
     </header>
