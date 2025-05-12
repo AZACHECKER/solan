@@ -504,7 +504,8 @@ const WalletCard = ({ wallet, language }) => {
 };
 
 // Wallet Detail Page
-const WalletDetail = () => {
+const WalletDetail = ({ language }) => {
+  const t = languages[language];
   const navigate = useNavigate();
   const [wallet, setWallet] = useState(null);
   const [balance, setBalance] = useState(null);
@@ -575,141 +576,161 @@ const WalletDetail = () => {
   if (loading && !wallet) {
     return (
       <div className="container mx-auto px-4 py-12 flex justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
+        <div className="win98-loader win98-loader-lg"></div>
       </div>
     );
   }
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <button onClick={() => navigate('/wallets')} className="btn btn-ghost mb-4">
-          ← Back to Wallets
-        </button>
-        
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">
-              {wallet?.name}
-              <span className="ml-2 badge badge-secondary">{wallet?.chain_type}</span>
-            </h1>
-            <p className="font-mono text-sm mt-2">{wallet?.address}</p>
-          </div>
-          
-          <button 
-            className="btn btn-primary"
-            onClick={() => setShowSendForm(!showSendForm)}
-          >
-            Send {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}
-          </button>
+      <div className="win98-window">
+        <div className="win98-window-title">
+          <span>{wallet?.name}</span>
         </div>
-      </div>
-      
-      {/* Balance Card */}
-      <div className="card bg-base-200 shadow-xl mb-8">
-        <div className="card-body">
-          <h2 className="card-title">Balance</h2>
-          {balance ? (
-            <p className="text-3xl font-bold">{balance.balance} {balance.token_symbol}</p>
-          ) : (
-            <span className="loading loading-spinner loading-md"></span>
-          )}
-        </div>
-      </div>
-      
-      {/* Send Form */}
-      {showSendForm && (
-        <div className="card bg-base-200 shadow-xl mb-8">
-          <div className="card-body">
-            <h2 className="card-title">Send {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}</h2>
-            <form onSubmit={sendTransaction}>
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Recipient Address</span>
-                </label>
-                <input 
-                  type="text" 
-                  value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
-                  className="input input-bordered" 
-                  placeholder={wallet?.chain_type === "ETH" ? "0x..." : "..."}
-                  required
-                />
+        <div className="win98-window-content p-4">
+          <div className="mb-6">
+            <button onClick={() => navigate('/wallets')} className="win98-btn mb-4">
+              ← {t.back}
+            </button>
+            
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl font-bold">
+                  {wallet?.name}
+                  <span className="ml-2 win98-badge">{wallet?.chain_type}</span>
+                </h1>
               </div>
               
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Amount</span>
-                </label>
-                <input 
-                  type="number" 
-                  step="0.000001"
-                  min="0"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="input input-bordered" 
-                  placeholder={`Amount in ${wallet?.chain_type === "ETH" ? "ETH" : "SOL"}`}
-                  required
-                />
-              </div>
-              
-              <div className="card-actions justify-end">
-                <button type="button" onClick={() => setShowSendForm(false)} className="btn btn-ghost">
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Send Transaction
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-      
-      {/* Transactions */}
-      <div className="card bg-base-200 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title mb-4">Transaction History</h2>
-          
-          {loading ? (
-            <div className="flex justify-center py-4">
-              <span className="loading loading-spinner loading-md"></span>
+              <button 
+                className="win98-btn win98-btn-primary"
+                onClick={() => setShowSendForm(!showSendForm)}
+              >
+                {t.send} {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}
+              </button>
             </div>
-          ) : transactions.length === 0 ? (
-            <p className="text-center py-4">No transactions found.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="table table-zebra">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((tx) => (
-                    <tr key={tx.tx_id}>
-                      <td>{new Date(tx.timestamp).toLocaleString()}</td>
-                      <td className="font-mono">{truncateAddress(tx.from_address)}</td>
-                      <td className="font-mono">{truncateAddress(tx.to_address)}</td>
-                      <td>{tx.amount} {tx.token_symbol}</td>
-                      <td>
-                        <span className={`badge ${
-                          tx.status === "confirmed" ? "badge-success" : 
-                          tx.status === "pending" ? "badge-warning" : "badge-error"
-                        }`}>
-                          {tx.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          </div>
+          
+          {/* Address and Private Key */}
+          <div className="win98-card mb-8">
+            <div className="win98-card-title">{t.address}</div>
+            <div className="win98-card-content">
+              <p className="font-mono text-sm break-all win98-inset p-2">{wallet?.address}</p>
+            </div>
+          </div>
+          
+          <div className="win98-card mb-8">
+            <div className="win98-card-title">{t.privateKeyHeading}</div>
+            <div className="win98-card-content">
+              <p className="font-mono text-sm break-all win98-inset p-2">{wallet?.encrypted_mnemonic}</p>
+            </div>
+          </div>
+          
+          {/* Balance Card */}
+          <div className="win98-card mb-8">
+            <div className="win98-card-title">{t.balance}</div>
+            <div className="win98-card-content">
+              {balance ? (
+                <p className="text-3xl font-bold win98-inset p-3">{balance.balance} {balance.token_symbol}</p>
+              ) : (
+                <div className="win98-loader"></div>
+              )}
+            </div>
+          </div>
+          
+          {/* Send Form */}
+          {showSendForm && (
+            <div className="win98-card mb-8">
+              <div className="win98-card-title">{t.send} {wallet?.chain_type === "ETH" ? "ETH" : "SOL"}</div>
+              <div className="win98-card-content">
+                <form onSubmit={sendTransaction}>
+                  <div className="form-control mb-4">
+                    <label className="win98-label">
+                      {t.recipient}
+                    </label>
+                    <input 
+                      type="text" 
+                      value={recipient}
+                      onChange={(e) => setRecipient(e.target.value)}
+                      className="win98-input" 
+                      placeholder={wallet?.chain_type === "ETH" ? "0x..." : "..."}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-control mb-4">
+                    <label className="win98-label">
+                      {t.amount}
+                    </label>
+                    <input 
+                      type="number" 
+                      step="0.000001"
+                      min="0"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="win98-input" 
+                      placeholder={`${t.amountPlaceholder} ${wallet?.chain_type === "ETH" ? "ETH" : "SOL"}`}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={() => setShowSendForm(false)} className="win98-btn">
+                      {t.cancel}
+                    </button>
+                    <button type="submit" className="win98-btn win98-btn-primary">
+                      {t.sendTransaction}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
+          
+          {/* Transactions */}
+          <div className="win98-card">
+            <div className="win98-card-title">{t.transactionHistory}</div>
+            <div className="win98-card-content">
+              {loading ? (
+                <div className="flex justify-center py-4">
+                  <div className="win98-loader"></div>
+                </div>
+              ) : transactions.length === 0 ? (
+                <p className="text-center py-4">{t.noTransactions}</p>
+              ) : (
+                <div className="overflow-x-auto win98-inset p-2">
+                  <table className="win98-table w-full">
+                    <thead>
+                      <tr>
+                        <th>{t.date}</th>
+                        <th>{t.from}</th>
+                        <th>{t.to}</th>
+                        <th>{t.amount}</th>
+                        <th>{t.status}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.map((tx) => (
+                        <tr key={tx.tx_id}>
+                          <td>{new Date(tx.timestamp).toLocaleString()}</td>
+                          <td className="font-mono overflow-hidden text-ellipsis max-w-[150px]">{tx.from_address}</td>
+                          <td className="font-mono overflow-hidden text-ellipsis max-w-[150px]">{tx.to_address}</td>
+                          <td>{tx.amount} {tx.token_symbol}</td>
+                          <td>
+                            <span className={`win98-badge ${
+                              tx.status === "confirmed" ? "win98-badge-success" : 
+                              tx.status === "pending" ? "win98-badge-warning" : "win98-badge-error"
+                            }`}>
+                              {tx.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
