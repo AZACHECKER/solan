@@ -437,7 +437,8 @@ const Wallets = ({ language }) => {
 };
 
 // Wallet Card Component
-const WalletCard = ({ wallet }) => {
+const WalletCard = ({ wallet, language }) => {
+  const t = languages[language];
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -458,38 +459,43 @@ const WalletCard = ({ wallet }) => {
   };
   
   return (
-    <div className="card bg-base-200 shadow-xl">
-      <div className="card-body">
-        <h2 className="card-title">
-          {wallet.name}
-          <div className="badge badge-secondary">{wallet.chain_type}</div>
-        </h2>
+    <div className="win98-card">
+      <div className="win98-card-title">
+        {wallet.name}
+        <div className="win98-badge">{wallet.chain_type}</div>
+      </div>
+      <div className="win98-card-content">
+        <h3 className="text-sm font-bold mb-1">{t.address}:</h3>
+        <p className="text-sm font-mono overflow-hidden text-ellipsis break-all win98-inset p-2 mb-3">
+          {wallet.address}
+        </p>
         
-        <p className="text-sm font-mono overflow-hidden text-ellipsis">
-          {truncateAddress(wallet.address)}
+        <h3 className="text-sm font-bold mb-1">{t.privateKeyHeading}:</h3>
+        <p className="text-sm font-mono overflow-hidden text-ellipsis break-all win98-inset p-2 mb-3">
+          {wallet.encrypted_mnemonic}
         </p>
         
         <div className="mt-4">
-          <h3 className="text-sm font-semibold mb-1">Balance:</h3>
+          <h3 className="text-sm font-bold mb-1">{t.balance}:</h3>
           {loading ? (
-            <span className="loading loading-spinner loading-sm"></span>
+            <div className="win98-loader win98-loader-sm"></div>
           ) : (
-            <p className="text-xl font-bold">{balance?.balance} {balance?.token_symbol}</p>
+            <p className="text-xl font-bold win98-inset p-2">{balance?.balance} {balance?.token_symbol}</p>
           )}
         </div>
         
-        <div className="card-actions justify-end mt-4">
+        <div className="flex justify-end mt-4 gap-2">
           <button 
-            className="btn btn-sm btn-outline"
+            className="win98-btn"
             onClick={() => navigate(`/wallet/${wallet.wallet_id}`)}
           >
-            View Details
+            {t.viewDetails}
           </button>
           <button 
-            className="btn btn-sm btn-primary"
+            className="win98-btn win98-btn-primary"
             onClick={() => navigate(`/chat?wallet=${wallet.wallet_id}`)}
           >
-            Use with AI
+            {t.useWithAI}
           </button>
         </div>
       </div>
