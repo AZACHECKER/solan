@@ -16,11 +16,27 @@ from web3 import Web3
 from eth_account import Account
 from hdwallet import HDWallet
 from hdwallet.symbols import ETH, SOL
-from solana.rpc.api import Client as SolanaClient
-from solana.publickey import PublicKey
 import base58
 from mnemonic import Mnemonic
 import secrets
+
+# For Solana
+from solana.rpc.api import Client as SolanaClient
+try:
+    from solana.publickey import PublicKey
+except ImportError:
+    # Fallback if the import fails
+    class PublicKey:
+        def __init__(self, value):
+            if isinstance(value, bytes):
+                self.value = value
+            elif isinstance(value, str):
+                self.value = base58.b58decode(value)
+            else:
+                raise ValueError("Unsupported value type")
+        
+        def __str__(self):
+            return base58.b58encode(self.value).decode('utf-8')
 
 # AI related imports
 import openai
